@@ -18,7 +18,7 @@ eClients bringClients(eClients* clientList, int lenClients, int id)
 				strcpy(oneClient.companyName , clientList[i].companyName);
 				strcpy(oneClient.cuit , clientList[i].cuit);
 				strcpy(oneClient.adress , clientList[i].adress);
-				strcpy(oneClient.locality , clientList[i].locality);
+				oneClient.localityId = clientList[i].localityId;
 				oneClient.clientId = clientList[i].clientId;
 				break;
 			}
@@ -87,12 +87,12 @@ int showClientsWithPendingOrders (eClients* clientList, sOrders* ordersList, int
 	    	   {
 	    		   contadorPedidospPendientes = deliverOrders (ordersList, lenOrders, clientList[i].clientId);
 
-	    		    printf(" %10d | %10s | %10s | %10s | %10s | %d |\n",
+	    		    printf(" %10d | %10s | %10s | %10s | %10d | %10d |\n",
 					clientList[i].clientId,
 					clientList[i].companyName,
 					clientList[i].cuit,
 					clientList[i].adress,
-					clientList[i].locality,
+					clientList[i].localityId,
 					contadorPedidospPendientes);
 	    	   }
 	       }
@@ -160,12 +160,12 @@ int showCompleteOrdersWithWeight (eClients* clientList, sOrders* ordersList, int
 	return state;
 }
 
-int showPendingOrdersByLocality (eClients* clientList, sOrders* ordersList, int lenClients, int lenOrders) // 9
-
+int showPendingOrdersByLocality (sLocality* localitiesList, eClients* clientList, sOrders* ordersList, int lenClients, int lenOrders, int* uniqueLocalityID) // 9
 {
 	int state;
-	char localidad[MAX];
+	char locality[MAX];
 	int ordersByLocalityCounter;
+	int localityFoundId;
 
 	ordersByLocalityCounter = 0;
 
@@ -173,27 +173,39 @@ int showPendingOrdersByLocality (eClients* clientList, sOrders* ordersList, int 
 
 		getValidLocality("\n\t\t\t\t\t\t\tIngrese la localidad de donde quiere filtrar sus pedidos: ",
 		"\t\t\t\t\t\tERROR - (RE-Ingrese la localidad de donde quiere filtrar sus pedidos) - ERROR : \n",
-		localidad);
+		locality);
 
-		FormartearCadena(localidad);
+		FormartearCadena(locality);
 
-		printf("La localidad que has elegido para  filtar los pedidos es %s", localidad);
+		localityFoundId = LOC_search(localitiesList, lenClients, locality, uniqueLocalityID);
 
-		printf("\n| Localidad | Pedidos Pendientes |\n");
-			printf("|____________|______________|\n");
-
-		for(int i = 0; i < lenClients; i++)
+		if(localityFoundId != 0)
 		{
-			if(clientList[i].isEmpty == FULL && strcmp(clientList[i].locality , localidad) == 0)
-			{
-				ordersByLocalityCounter+= deliverOrders(ordersList, lenOrders, clientList[i].clientId);
-			}
-		}
-		printf("| %10s | %10d |\n",
-		localidad,
-		ordersByLocalityCounter);
+			printf("La localidad que has elegido para  filtar los pedidos es %s", locality);
 
-	state = 0;
+			printf("\n| Localidad | Pedidos Pendientes |\n");
+				printf("|____________|______________|\n");
+
+			for(int i = 0; i < lenClients; i++)
+			{
+				if(clientList[i].isEmpty == FULL && clientList[i].localityId == localityFoundId)
+				{
+					ordersByLocalityCounter+= deliverOrders(ordersList, lenOrders, clientList[i].clientId);
+				}
+			}
+			printf("| %10s | %10d |\n",
+			locality,
+			ordersByLocalityCounter);
+
+			state = 0;
+		}
+		else
+		{
+			printf("\nEsa localidad no existe, intente agregandola\n"
+					"Volviendo al menu principal");
+
+			return EXIT_SUCCESS;
+		}
 
 	return state;
 }

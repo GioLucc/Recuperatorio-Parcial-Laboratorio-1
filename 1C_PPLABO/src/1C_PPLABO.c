@@ -30,7 +30,9 @@ de recolección” que posee en estado “Pendiente”.
 de plástico.
 9) Ingresar una localidad e indicar la cantidad de pedidos pendientes para dicha localidad.
 10) Cantidad de kilos de polipropileno reciclado promedio por cliente. (kilos totales / cantidad de clientes)
-
+11) Cliente con más pedidos pendientes.
+12) Cliente con más pedidos completados.
+13) Cliente con más pedidos.
 Los tipos de plástico que la empresa puede reciclar son:
 
 • HDPE: Polietileno de alta densidad (Envases para lácteos, perfumes, detergentes líquidos, etc.)
@@ -64,16 +66,23 @@ int main(void)
 	setbuf(stdout,NULL);
 	int menuOption;
 	eClients clientList[MAX]; // Defino el tamaño de los clientes
-	sOrders ordersList[1000]; // Defino el tamaño de los pedidos
+	sOrders ordersList[MAX2]; // Defino el tamaño de los pedidos
+	sLocality localitiesList[MAX];
 	int uniqueID;
 	int uniqueOrderID;
+	int uniqueLocalityID;
+	int subMenu;
+	int maxHardcodeLocalitiesFlag;
+
+	maxHardcodeLocalitiesFlag = 0;
 
 	uniqueOrderID = 0;
 	uniqueID = 0;
+	uniqueLocalityID = 0;
 
-	initOrders(ordersList, 1000); // Inicia los pedidos de recolección en empty
+	initOrders(ordersList, MAX2); // Inicia los pedidos de recolección en empty
 	initClients(clientList, MAX); // se coloca antes del do para no importar que arranque el vector
-
+	LOC_init(localitiesList,MAX);
 	do
 	{
 		printMenu();
@@ -83,7 +92,49 @@ int main(void)
 		switch(menuOption)
 		{
 			case 1:
-				newClient(clientList,MAX,&uniqueID);
+				do
+				{
+					printf("\t\t\t\t\t\t              ( V ) Menu de Opciones ( V )\t\t\t\t  \n\n");
+									printf("\t\t\t\t\t\t\t      > 1 - Alta de cliente - 1 <\n\n");
+									printf("\t\t\t\t\t\t         > 2 - Agregar localidad. - 2 <\n\n");
+									printf("\t\t\t\t\t\t              > 3 - Cargar localidades predeterminadas. - 3 <\n\n");
+									printf("\t\t\t\t\t\t         > 4 - Cargar Clientes predeterminados. - 4 <\n\n");
+									printf("\t\t\t\t\t\t         > 5 - Volver al menu principal. - 5 <\n\n");
+
+								subMenu = getValidInt("\n\t\t\t\t\t         Ingrese una opcion del menu para realizar del 1 al 5: ",
+								 "\n\n\t\t\t\t      ERROR - (Has ingresado un numero no contemplado en el menu reintente) - ERROR\n\n",
+								 1, 5);
+					switch(subMenu)
+					{
+							case 1:
+								newClient(clientList, localitiesList, MAX, &uniqueID, &uniqueLocalityID);
+							break;
+
+							case 2:
+								LOC_newLocality(localitiesList, MAX, &uniqueLocalityID);
+							break;
+
+							case 3:
+								if(maxHardcodeLocalitiesFlag == 0)
+								{
+									LOC_hardcodeLocalities(localitiesList,MAX,&uniqueLocalityID);
+									maxHardcodeLocalitiesFlag = 1;
+								}
+								else
+								{
+									printf("\n\t\t\tLas localidades ya fueron cargadas,"
+											" cargarlas mas de una vez podria ocasionar un problema en el programa\n"
+											"\n\t\t\t\t\t\t Volviendo al menu\n\n");
+								}
+							break;
+
+							case 4:
+
+
+							break;
+					}
+				}while(subMenu != 5);
+
 			break;
 
 			case 2:
@@ -96,24 +147,25 @@ int main(void)
 				newOrder(clientList,ordersList,MAX,&uniqueOrderID);
 			break;
 			case 5:
-				processingOrder(clientList, ordersList, MAX, 1000);
+				processingOrder(clientList, ordersList, MAX, MAX2);
 			break;
 			case 6:
-				showClientsWithPendingOrders(clientList,ordersList,MAX,1000);
+				showClientsWithPendingOrders(clientList,ordersList,MAX,MAX2);
 			break;
 			case 7:
-				showPedingOrdersWithClientsInfo(clientList, ordersList, MAX, 1000);
+				showPedingOrdersWithClientsInfo(clientList, ordersList, MAX, MAX2);
 			break;
 			case 8:
-				showCompleteOrdersWithWeight(clientList,ordersList,MAX,1000);
+				showCompleteOrdersWithWeight(clientList,ordersList,MAX,MAX2);
 			break;
 			case 9:
-				showPendingOrdersByLocality(clientList, ordersList,MAX,1000);
+				showPendingOrdersByLocality(localitiesList,clientList, ordersList,MAX,MAX2,&uniqueLocalityID);
 			break;
 			case 10:
-				averagePPRecicledByClient(clientList, ordersList,MAX,1000);
+				averagePPRecicledByClient(clientList, ordersList,MAX,MAX2);
 			break;
 			case 11:
+//				clientWithMostPendingOrders (localitiesList,clientList,ordersList, lenClients, lenOrders, );
 
 			break;
 			case 12:

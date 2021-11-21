@@ -137,14 +137,15 @@ int arrayChargeOrders (sOrders* ordersList, eClients* clientList, int len, int* 
 		ordersList[pos].orderWeight = weight+=33;
 		ordersList[pos].clientId = clientList[i].clientId;
 
-//		if(i %2==0)
-//		{
+		if(i %2==0)
+		{
 			status = PENDING;
-//		}
-//		else
-//		{
-//			status = COMPLETED;
-//		}
+		}
+		else
+		{
+			status = COMPLETED;
+
+		}
 		ordersList[pos].status = status;
 		ordersList[pos].isEmpty = FULL;
 

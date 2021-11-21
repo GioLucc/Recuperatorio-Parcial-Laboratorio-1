@@ -12,6 +12,7 @@
 
 #include "BasicFunctions.h"
 #include "Clients.h"
+#include "Locality.h"
 #include "RecolectionOrders.h"
 
 
@@ -21,8 +22,9 @@
 int showClientsWithPendingOrders (eClients* clientList, sOrders* ordersList, int lenClients, int lenOrders); // 6
 int showPedingOrdersWithClientsInfo (eClients* clientList, sOrders* ordersList, int lenClients, int lenOrders); // 7
 int showCompleteOrdersWithWeight (eClients* clientList, sOrders* ordersList, int lenClients, int lenOrders); // 8
-int showPendingOrdersByLocality (eClients* clientList, sOrders* ordersList, int lenClients, int lenOrders); // 9
+int showPendingOrdersByLocality (sLocality* localitiesList, eClients* clientList, sOrders* ordersList, int lenClients, int lenOrders, int* uniqueLocalityID); // 9
 int averagePPRecicledByClient (eClients* clientList, sOrders* ordersList, int lenClients, int lenOrders); // 10
+int clientWithMostPendingOrders (eClients* clientList, sOrders* ordersList, int lenClients, int lenOrders);
 
 
 eClients bringClients(eClients* clientList,int lenClients, int id);

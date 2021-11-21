@@ -8,6 +8,7 @@
 #ifndef CLIENTS_H_
 #define CLIENTS_H_
 #include "BasicFunctions.h"
+#include "Locality.h"
 #define FULL 0
 #define EMPTY 1
 
@@ -16,7 +17,7 @@ struct
 	char companyName[20];
 	char cuit[14];
 	char adress[20];
-	char locality[20];
+	int localityId;
 	int clientId;
 	int orderStatus;
 	int isEmpty;
@@ -25,8 +26,8 @@ struct
 
 int initClients (eClients* clientList, int len);
 int freeClientSpot (eClients* clientList, int len);
-int newClient (eClients* clientList, int len, int* uniqueID);
-int addClient (eClients* clientList, int len, char companyName [], char cuit [], char adress [], char locality [], int id);
+int newClient (eClients* clientList, sLocality* localitiesList, int len, int* uniqueID, int* uniqueLocalityID);
+int addClient (eClients* clientList, int len, char companyName [], char cuit[], char adress [], int localityId, int id);
 int modifyClient (eClients* clientList, int len);
 int idAsk(eClients* clientList, int len);
 int idValidation (eClients* clientList, int len, int enteredId);

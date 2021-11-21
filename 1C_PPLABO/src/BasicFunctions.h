@@ -8,6 +8,7 @@
 #ifndef BASICFUNCTIONS_H_
 #define BASICFUNCTIONS_H_
 #define MAX 100
+#define MAX2 1000
 
 #include <stdio.h>
 #include <stdlib.h>
