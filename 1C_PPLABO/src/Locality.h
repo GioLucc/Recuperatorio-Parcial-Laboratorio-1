@@ -27,6 +27,8 @@ int LOC_chargeLocalitiesList(sLocality* localitiesList, int* uniqueLocalityID, i
 int LOC_search (sLocality* localitiesList, int localitiesLen, char auxLocality [], int* uniqueLocalityID);
 int LOC_printOneLocality(sLocality localitiesList);
 int LOC_printListOfLocalities(sLocality* localitiesList, int len);
+sLocality LOC_getOneFromId(sLocality* localitiesList, int localitiesLen, int id);
+
 
 
 

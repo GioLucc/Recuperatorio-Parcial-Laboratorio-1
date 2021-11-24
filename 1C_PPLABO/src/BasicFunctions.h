@@ -16,6 +16,7 @@
 #include <ctype.h>
 
 void printMenu(void);
+void printSubMenu(void);
 int getValidInt(char mensaje [], char error [], int min, int max);
 int OnlyIntegrersValidation(char integrer[], char mensaje[],char error [], int min, int max);
 int getString(char mensaje[],char str[]);

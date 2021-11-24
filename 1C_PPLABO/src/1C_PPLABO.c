@@ -65,9 +65,10 @@ int main(void)
 {
 	setbuf(stdout,NULL);
 	int menuOption;
-	eClients clientList[MAX]; // Defino el tamaño de los clientes
-	sOrders ordersList[MAX2]; // Defino el tamaño de los pedidos
+	eClients clientList[MAX];
+	sOrders ordersList[MAX2];
 	sLocality localitiesList[MAX];
+	sPlastics plasticsList[MAX2];
 	int uniqueID;
 	int uniqueOrderID;
 	int uniqueLocalityID;
@@ -75,18 +76,18 @@ int main(void)
 	int maxHardcodeLocalitiesFlag;
 
 	maxHardcodeLocalitiesFlag = 0;
-
 	uniqueOrderID = 0;
 	uniqueID = 0;
 	uniqueLocalityID = 0;
 
-	initOrders(ordersList, MAX2); // Inicia los pedidos de recolección en empty
-	initClients(clientList, MAX); // se coloca antes del do para no importar que arranque el vector
+	initOrders(ordersList, MAX2);
+	initClients(clientList, MAX);
 	LOC_init(localitiesList,MAX);
+	PLA_initArray(plasticsList, MAX2);
 	do
 	{
 		printMenu();
-		menuOption = getValidInt("\n\t\t\t\t\t         Ingrese una opcion del menu para realizar del 1 al 10: ",
+		menuOption = getValidInt("\n\t\t\t\t\t\t\tIngrese una opcion del menu para realizar del 1 al 10: ",
 				"\n\n\t\t\t\t      ERROR - (Has ingresado un numero no contemplado en el menu reintente) - ERROR\n\n", 1, 16);
 
 		switch(menuOption)
@@ -94,91 +95,89 @@ int main(void)
 			case 1:
 				do
 				{
-					printf("\t\t\t\t\t\t              ( V ) Menu de Opciones ( V )\t\t\t\t  \n\n");
-									printf("\t\t\t\t\t\t\t      > 1 - Alta de cliente - 1 <\n\n");
-									printf("\t\t\t\t\t\t         > 2 - Agregar localidad. - 2 <\n\n");
-									printf("\t\t\t\t\t\t              > 3 - Cargar localidades predeterminadas. - 3 <\n\n");
-									printf("\t\t\t\t\t\t         > 4 - Cargar Clientes predeterminados. - 4 <\n\n");
-									printf("\t\t\t\t\t\t         > 5 - Volver al menu principal. - 5 <\n\n");
-
-								subMenu = getValidInt("\n\t\t\t\t\t         Ingrese una opcion del menu para realizar del 1 al 5: ",
-								 "\n\n\t\t\t\t      ERROR - (Has ingresado un numero no contemplado en el menu reintente) - ERROR\n\n",
-								 1, 5);
+					printSubMenu();
+					subMenu = getValidInt("\n\t\t\t\t\t\t\tIngrese una opcion del menu para realizar del 1 al 5: ",
+					 "\n\n\t\t\t\t\tERROR - (Has ingresado un numero no contemplado en el menu reintente) - ERROR\n\n",
+					 1, 5);
 					switch(subMenu)
 					{
-							case 1:
-								newClient(clientList, localitiesList, MAX, &uniqueID, &uniqueLocalityID);
-							break;
+						case 1:
+							newClient(clientList, localitiesList, MAX, &uniqueID, &uniqueLocalityID);
+						break;
 
-							case 2:
-								LOC_newLocality(localitiesList, MAX, &uniqueLocalityID);
-							break;
-
-							case 3:
-								if(maxHardcodeLocalitiesFlag == 0)
-								{
-									LOC_hardcodeLocalities(localitiesList,MAX,&uniqueLocalityID);
-									maxHardcodeLocalitiesFlag = 1;
-								}
-								else
-								{
-									printf("\n\t\t\tLas localidades ya fueron cargadas,"
-											" cargarlas mas de una vez podria ocasionar un problema en el programa\n"
-											"\n\t\t\t\t\t\t Volviendo al menu\n\n");
-								}
-							break;
-
-							case 4:
+						case 2:
+							LOC_newLocality(localitiesList, MAX, &uniqueLocalityID);
 
 
-							break;
+						break;
+
+						case 3:
+							if(maxHardcodeLocalitiesFlag == 0)
+							{
+								LOC_hardcodeLocalities(localitiesList,MAX,&uniqueLocalityID);
+								CLI_createRandomClients(clientList, MAX, &uniqueID);
+								arrayChargeOrders(ordersList,clientList,MAX,&uniqueOrderID); /// Ordenes
+								maxHardcodeLocalitiesFlag = 1;
+
+							}
+							else
+							{
+								printf("\n\t\t\tLas localidades ya fueron cargadas,"
+										" cargarlas mas de una vez podria ocasionar un problema en el programa\n"
+										"\n\t\t\t\t\t\t Volviendo al menu\n\n");
+							}
+						break;
+
+						case 4:
+
+
+						break;
 					}
 				}while(subMenu != 5);
 
 			break;
 
 			case 2:
-				modifyClient(clientList,MAX);
+				modifyClient(clientList, localitiesList, MAX, &uniqueLocalityID);
 			break;
 			case 3:
-				withdrawalClient(clientList,MAX);
+				withdrawalClient(clientList, localitiesList, MAX);
 			break;
 			case 4:
-				newOrder(clientList,ordersList,MAX,&uniqueOrderID);
+				newOrder(clientList, ordersList, localitiesList, MAX, &uniqueOrderID);
 			break;
 			case 5:
-				processingOrder(clientList, ordersList, MAX, MAX2);
+				processingOrder(clientList, ordersList, plasticsList, MAX, MAX2);
 			break;
 			case 6:
-				showClientsWithPendingOrders(clientList,ordersList,MAX,MAX2);
+				showClientsWithPendingOrders(clientList, ordersList, localitiesList, MAX, MAX2, MAX);
 			break;
 			case 7:
 				showPedingOrdersWithClientsInfo(clientList, ordersList, MAX, MAX2);
 			break;
 			case 8:
-				showCompleteOrdersWithWeight(clientList,ordersList,MAX,MAX2);
+				showCompleteOrdersWithWeight(clientList, ordersList, plasticsList, MAX, MAX2);
 			break;
 			case 9:
 				showPendingOrdersByLocality(localitiesList,clientList, ordersList,MAX,MAX2,&uniqueLocalityID);
 			break;
 			case 10:
-				averagePPRecicledByClient(clientList, ordersList,MAX,MAX2);
+				averagePPRecicledByClient(clientList, ordersList, plasticsList, MAX, MAX2);
 			break;
 			case 11:
-//				clientWithMostPendingOrders (localitiesList,clientList,ordersList, lenClients, lenOrders, );
-
+				clientWithMostOrders(clientList, localitiesList,ordersList, MAX, MAX2, PENDING);
 			break;
 			case 12:
-
+				clientWithMostOrders(clientList, localitiesList,ordersList, MAX, MAX2, COMPLETED);
 			break;
 			case 13:
-
+				clientWithMostOrders(clientList, localitiesList,ordersList, MAX, MAX2, ALL);
 			break;
 			case 14:
-
+				printPlasticRecicledByLocality(clientList, localitiesList, ordersList, plasticsList, MAX, MAX2, &uniqueLocalityID);
 			break;
 			case 15:
-				arrayCharge(clientList,MAX,&uniqueID); /// Clientes
+
 				arrayChargeOrders(ordersList,clientList,MAX,&uniqueOrderID); /// Ordenes
 			break;
 

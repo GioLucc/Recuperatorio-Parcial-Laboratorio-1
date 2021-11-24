@@ -10,24 +10,36 @@
 void printMenu(void)
 {
 
-			printf("\t\t\t================================================================================================\n");
-			printf("\t\t\t\t\t\t\t\tWelcome to the Data Base\n");
-			printf("\t\t\t\t\t\t\t\t\tDalaran\n");
-			printf("\t\t\t================================================================================================\n\t\t\t\t\t\t\t\t\t\n");
-			printf("\t\t\t\t\t\t              ( V ) Menu de Opciones ( V )\t\t\t\t  \n\n");
-			printf("\t\t\t\t\t\t\t      > 1 - Alta de cliente - 1 <\n\n");
-			printf("\t\t\t\t\t\t         > 2 - Modificar datos de cliente. - 2 <\n\n");
-			printf("\t\t\t\t\t\t              > 3 - Baja de cliente. - 3 <\n\n");
-			printf("\t\t\t\t\t\t         > 4 - Crear pedido de recolección - 4 <\n\n");
-			printf("\t\t\t\t\t\t              > 5 - Procesar residuos - 5 <\n\n");
-			printf("\t\t\t\t\t\t              > 6 - Imprimir Clientes - 6 <\n\n");
-			printf("\t\t\t\t\t\t         > 7 - Imprimir Pedidos pendientes - 7 <\n\n");
-			printf("\t\t\t\t\t\t         > 8 - Imprimir Pedidos procesados. - 8 <\n\n");
-			printf("\t\t\t   > 9 - Ingresar una localidad e indicar la cantidad de pedidos pendientes para dicha localidad. - 9 <\n\n");
-			printf("\t\t\t\t     > 10 - Cantidad de kilos de polipropileno reciclado promedio por cliente. - 10 <\n\n");
-			printf("\t\t\t\t\t\t\t\t  > 11 - Salir. - 11 <\n\n\n");
+			printf("\n\n\n\t\t\t\t================================================================================================\n");
+			printf("\t\t\t\t\t\t\t\t\tWelcome to the Data Base\n");
+			printf("\t\t\t\t\t\t\t\t\t\tDalaran\n");
+			printf("\t\t\t\t================================================================================================\n\t\t\t\t\t\t\t\t\t\n");
+			printf("\t\t\t\t\t\t\t              ( V ) Menu de Opciones ( V )\t\t\t\t  \n\n");
+			printf("\t\t\t\t\t\t\t\t      > 1 - Alta de cliente - 1 <\n\n");
+			printf("\t\t\t\t\t\t\t         > 2 - Modificar datos de cliente. - 2 <\n\n");
+			printf("\t\t\t\t\t\t\t              > 3 - Baja de cliente. - 3 <\n\n");
+			printf("\t\t\t\t\t\t\t         > 4 - Crear pedido de recolección - 4 <\n\n");
+			printf("\t\t\t\t\t\t\t              > 5 - Procesar residuos - 5 <\n\n");
+			printf("\t\t\t\t\t\t\t              > 6 - Imprimir Clientes - 6 <\n\n");
+			printf("\t\t\t\t\t\t\t         > 7 - Imprimir Pedidos pendientes - 7 <\n\n");
+			printf("\t\t\t\t\t\t\t         > 8 - Imprimir Pedidos procesados. - 8 <\n\n");
+			printf("\t\t\t\t   > 9 - Ingresar una localidad e indicar la cantidad de pedidos pendientes para dicha localidad. - 9 <\n\n");
+			printf("\t\t\t\t\t     > 10 - Cantidad de kilos de polipropileno reciclado promedio por cliente. - 10 <\n\n");
+			printf("\t\t\t\t\t\t\t\t\t  > 11 - Salir. - 11 <\n\n\n");
 
 
+
+}
+
+void printSubMenu(void)
+{
+
+	printf("\n\n\n\t\t\t\t\t\t\t              ( V ) Menu de Opciones ( V )\t\t\t\t  \n\n");
+	printf("\t\t\t\t\t\t\t\t      > 1 - Alta de cliente - 1 <\n\n");
+	printf("\t\t\t\t\t\t\t            > 2 - Agregar localidad. - 2 <\n\n");
+	printf("\t\t\t\t\t\t              > 3 - Cargar localidades predeterminadas. - 3 <\n\n");
+	printf("\t\t\t\t\t\t\t       > 4 - Cargar Clientes predeterminados. - 4 <\n\n");
+	printf("\t\t\t\t\t\t\t          > 5 - Volver al menu principal. - 5 <\n\n");
 
 }
 
@@ -52,14 +64,6 @@ int OnlyIntegrersValidation(char integrer [],char error [], char mensaje[], int 
 		printf ("%s",mensaje);
 		scanf ("%s", integrer);
 
-	/*	for(char* ptr = integrer; *ptr != 0; ptr++)
-		{
-			if (!isdigit(*ptr))
-			{
-
-			}
-		}
-*/
 		while(valido == 0)
 		{
 			char *ptr;

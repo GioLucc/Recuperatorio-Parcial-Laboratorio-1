@@ -28,14 +28,18 @@ int initClients (eClients* clientList, int len);
 int freeClientSpot (eClients* clientList, int len);
 int newClient (eClients* clientList, sLocality* localitiesList, int len, int* uniqueID, int* uniqueLocalityID);
 int addClient (eClients* clientList, int len, char companyName [], char cuit[], char adress [], int localityId, int id);
-int modifyClient (eClients* clientList, int len);
-int idAsk(eClients* clientList, int len);
-int idValidation (eClients* clientList, int len, int enteredId);
+int modifyClient (eClients* clientList, sLocality* localitiesList, int len, int* uniqueLocalityID);
+int idAsk(eClients* clientList, sLocality* localitiesList, int len);
+int idValidation (eClients* clientList, sLocality* localitiesList, int len, int enteredId);
 int showOneClient (eClients clientList);
 int showListOfClients (eClients* clientList, int len);
-int withdrawalClient (eClients* clientList, int len);
+int withdrawalClient (eClients* clientList, sLocality* localitiesList, int len);
 int arrayCharge (eClients* clientList, int len, int* uniqueID);
 int initOrdersQueue (eClients* clientList, int len);
+eClients CLI_getOneFromId(eClients* clientList, int clientsLen, int id);
+int CLI_createRandomClients(eClients* clientList ,int clientsLen,int *uniqueID);
+
+
 
 
 

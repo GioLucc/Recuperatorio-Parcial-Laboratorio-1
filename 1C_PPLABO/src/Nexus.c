@@ -7,50 +7,68 @@
 
 #include "Nexus.h"
 
-eClients bringClients(eClients* clientList, int lenClients, int id)
+eClients bringClients(eClients* clientList, int clientsLen, int id)
 {
 	eClients oneClient;
 
-		for(int i = 0; i < lenClients; i++)
+	if(clientList != NULL && clientsLen > 0)
+	{
+		for(int i = 0; i < clientsLen; i++)
 		{
 			if(clientList[i].clientId == id && clientList[i].isEmpty == FULL)
 			{
-				strcpy(oneClient.companyName , clientList[i].companyName);
-				strcpy(oneClient.cuit , clientList[i].cuit);
-				strcpy(oneClient.adress , clientList[i].adress);
-				oneClient.localityId = clientList[i].localityId;
-				oneClient.clientId = clientList[i].clientId;
+				oneClient = clientList[i];
 				break;
 			}
 		}
+	}
 
 	return oneClient;
-
 }
 
-sOrders bringOrders(sOrders* ordersList, int lenOrders, int id)
+sOrders bringOrders(sOrders* ordersList, int ordersLen, int id)
 {
 	sOrders oneOrder;
 
 	oneOrder.isEmpty = EMPTY;
 
-	for(int i = 0; i < lenOrders; i++)
+	if(ordersList != NULL && ordersLen > 0)
 	{
-		if(ordersList[i].status == COMPLETED
-		&& ordersList[i].clientId == id)
+		for(int i = 0; i < ordersLen; i++)
 		{
-			oneOrder.HDPE = ordersList[i].HDPE;
-			oneOrder.LDPE = ordersList[i].LDPE;
-			oneOrder.PP = ordersList[i].PP;
-			oneOrder.desechableThrash = ordersList[i].desechableThrash;
-			oneOrder.clientId = ordersList[i].clientId;
-			oneOrder.orderId = ordersList[i].orderId;
-			oneOrder.isEmpty = FULL;
-			break;
+			if(ordersList[i].status == COMPLETED
+			&& ordersList[i].clientId == id)
+			{
+				oneOrder = ordersList[i];
+				break;
+			}
 		}
 	}
 
 	return oneOrder;
+}
+
+sPlastics bringPlasticTypes (sPlastics* plasticList, int plasticLen, int id)
+{
+	sPlastics oneProcessedOrder;
+
+	if(plasticList != NULL && plasticLen > 0)
+	{
+		for(int i = 0; i < plasticLen; i++)
+		{
+			if(plasticList[i].isEmpty == FULL && plasticList[i].orderId == id)
+			{
+				oneProcessedOrder.HDPE = plasticList[i].HDPE;
+				oneProcessedOrder.LDPE = plasticList[i].LDPE;
+				oneProcessedOrder.PP = plasticList[i].PP;
+				oneProcessedOrder.desechableThrash = plasticList[i].desechableThrash;
+				oneProcessedOrder.orderId = plasticList[i].orderId;
+				break;
+			}
+		}
+	}
+
+	return oneProcessedOrder;
 }
 
 int deliverOrders (sOrders* ordersList, int ordersLen, int id)
@@ -59,6 +77,8 @@ int deliverOrders (sOrders* ordersList, int ordersLen, int id)
 
 	contadorPendingOrders = 0;
 
+	if(ordersList != NULL && ordersLen > 0)
+	{
 		for(int i = 0; i < ordersLen; i++)
 		{
 			if(ordersList[i].isEmpty == FULL && ordersList[i].clientId == id && ordersList[i].status == PENDING)
@@ -66,50 +86,58 @@ int deliverOrders (sOrders* ordersList, int ordersLen, int id)
 				contadorPendingOrders++;
 			}
 		}
+	}
 
 	return contadorPendingOrders;
 }
 
-int showClientsWithPendingOrders (eClients* clientList, sOrders* ordersList, int lenClients, int lenOrders) // 6
+int showClientsWithPendingOrders (eClients* clientList, sOrders* ordersList ,sLocality* localitiesList, int clientsLen, int lenOrders, int localitiesLen) // 6
 {
 	int contadorPedidospPendientes;
 	int state;
+	sLocality auxLocalityId;
 
 	state = -1;
 	contadorPedidospPendientes = 0;
 
-	printf("\n|ID Cliente |  Nombre de la compañia | Cuit | Direccion | Localidad|PEDIDOS|\n");
-		printf("|____________|_____________|______________|______|______________|________|\n");
+	if(clientList != NULL && ordersList != NULL && clientsLen > 0 && lenOrders > 0)
+	{
+		printf("\n \t\t  |ID Cliente|  Nombre de la compañia |          Cuit      |              Direccion    |         Localidad       |   PEDIDOS  |\n");
+		printf(" \t\t  |__________|________________________|____________________|___________________________|_________________________|____________|\n");
 
-	       for(int i = 0; i < lenClients; i++)
-	       {
-	    	   if(clientList != NULL && clientList[i].isEmpty == FULL)
-	    	   {
-	    		   contadorPedidospPendientes = deliverOrders (ordersList, lenOrders, clientList[i].clientId);
+		   for(int i = 0; i < clientsLen; i++)
+		   {
+			   if(clientList != NULL && clientList[i].isEmpty == FULL)
+			   {
+				   auxLocalityId = LOC_getOneFromId(localitiesList, localitiesLen, clientList[i].localityId);
+				   contadorPedidospPendientes = deliverOrders (ordersList, lenOrders, clientList[i].clientId);
 
-	    		    printf(" %10d | %10s | %10s | %10s | %10d | %10d |\n",
+					printf("\t\t  | %5d    |    %15s     |    %15s  |%25s |  %18s     |  %5d     |\n",
 					clientList[i].clientId,
 					clientList[i].companyName,
 					clientList[i].cuit,
 					clientList[i].adress,
-					clientList[i].localityId,
+					auxLocalityId.locality,
 					contadorPedidospPendientes);
-	    	   }
-	       }
-	       contadorPedidospPendientes = 0;
+			   }
+		   }
+		   contadorPedidospPendientes = 0;
+	}
 
 	return state;
 }
 
-int showPedingOrdersWithClientsInfo (eClients* clientList, sOrders* ordersList, int lenClients, int lenOrders) // 7
+int showPedingOrdersWithClientsInfo (eClients* clientList, sOrders* ordersList, int clientsLen, int lenOrders) // 7
 {
 	int state;
 	eClients auxClient;
 
 	state = -1;
 
-		printf("\n|      Cuit |        Direccion |        Peso |\n");
-			printf("|____________|_____________|______________|\n");
+	if(clientList != NULL && ordersList != NULL && clientsLen > 0 && lenOrders > 0)
+	{
+		printf("\n8\n\t\t\t\t\t\t\t|      Cuit     |        Direccion           |      Peso    |\n");
+		printf("\t\t\t\t\t\t\t|_______________|____________________________|______________|\n");
 
 		for(int i = 0; i < lenOrders; i++)
 		{
@@ -117,7 +145,7 @@ int showPedingOrdersWithClientsInfo (eClients* clientList, sOrders* ordersList, 
 			{
 				auxClient = bringClients(clientList, MAX, ordersList[i].clientId);
 
-				printf("| %10s | %10s | %10d |\n",
+				printf("\t\t\t\t\t\t\t| %10s |%24s    |     %5d    |\n",
 				auxClient.cuit,
 				auxClient.adress,
 				ordersList[i].orderWeight);
@@ -125,42 +153,50 @@ int showPedingOrdersWithClientsInfo (eClients* clientList, sOrders* ordersList, 
 				state = 0;
 			}
 		}
-
+	}
 	return state;
 }
 
-
-int showCompleteOrdersWithWeight (eClients* clientList, sOrders* ordersList, int lenClients, int lenOrders) // 8
+int showCompleteOrdersWithWeight (eClients* clientList, sOrders* ordersList, sPlastics* plasticsList, int clientsLen, int ordersLen) // 8
 {
 	int state;
+	sPlastics auxPlastic;
 	eClients oneClient;
 
 	state = -1;
 
-	printf("\n|Cuit |  Direccion | Cantidad HDPE | Cantidad LDPE | Cantidad PP | Cantidad no reciclable|\n");
-		printf("|____________|_____________|______________|______|______________|________|\n");
+	if(clientList != NULL && ordersList != NULL && clientsLen > 0 && ordersLen > 0)
+	{
+		printf("\n \t\t\t  |        Cuit     |         Direccion        | Cantidad HDPE | Cantidad LDPE | Cantidad PP   |Cantidad no reciclable|\n");
+		printf(" \t\t\t  |_________________|__________________________|_______________|_______________|_______________|______________________|\n");
 
-		for(int i = 0; i < lenOrders; i++)
+		for(int i = 0; i < ordersLen; i++)
 		{
-			if(ordersList[i].isEmpty == FULL && ordersList[i].status == COMPLETED)
+			if(ordersList[i].isEmpty == FULL)
 			{
-				oneClient = bringClients(clientList, lenClients, ordersList[i].clientId);
+				oneClient = bringClients(clientList, clientsLen, ordersList[i].clientId);
+				auxPlastic = bringPlasticTypes(plasticsList, ordersLen, ordersList[i].orderId);
 
-					printf("%10s  | %10s  |  %10d | %10d  | %10d  |  %10d |\n" ,
+				if(oneClient.isEmpty == FULL && ordersList[i].status == COMPLETED)
+				{
+
+					printf(" \t\t\t  |  %10s  | %23s  |    %5d      |    %5d      |    %5d      |       %5d          |\n" ,
 					oneClient.cuit,
 					oneClient.adress,
-					ordersList[i].HDPE,
-					ordersList[i].LDPE,
-					ordersList[i].PP,
-					ordersList[i].desechableThrash);
+					auxPlastic.HDPE,
+					auxPlastic.LDPE,
+					auxPlastic.PP,
+					auxPlastic.desechableThrash);
 					state = 0;
+				}
 			}
 		}
+	}
 
 	return state;
 }
 
-int showPendingOrdersByLocality (sLocality* localitiesList, eClients* clientList, sOrders* ordersList, int lenClients, int lenOrders, int* uniqueLocalityID) // 9
+int showPendingOrdersByLocality (sLocality* localitiesList, eClients* clientList, sOrders* ordersList, int clientsLen, int lenOrders, int* uniqueLocalityID) // 9
 {
 	int state;
 	char locality[MAX];
@@ -171,29 +207,31 @@ int showPendingOrdersByLocality (sLocality* localitiesList, eClients* clientList
 
 	state = -1;
 
-		getValidLocality("\n\t\t\t\t\t\t\tIngrese la localidad de donde quiere filtrar sus pedidos: ",
+	if(clientList != NULL && ordersList != NULL && localitiesList != NULL && clientsLen > 0 && lenOrders > 0)
+	{
+		getValidLocality("\n\t\t\t\t\t\tIngrese la localidad de donde quiere filtrar sus pedidos: ",
 		"\t\t\t\t\t\tERROR - (RE-Ingrese la localidad de donde quiere filtrar sus pedidos) - ERROR : \n",
 		locality);
 
 		FormartearCadena(locality);
 
-		localityFoundId = LOC_search(localitiesList, lenClients, locality, uniqueLocalityID);
+		localityFoundId = LOC_search(localitiesList, clientsLen, locality, uniqueLocalityID);
 
 		if(localityFoundId != 0)
 		{
-			printf("La localidad que has elegido para  filtar los pedidos es %s", locality);
+			printf("\n\n\t\t\t\t\t\tLa localidad que has elegido para  filtar los pedidos es %s\n\n", locality);
 
-			printf("\n| Localidad | Pedidos Pendientes |\n");
-				printf("|____________|______________|\n");
+			printf("\n\t\t\t\t\t\t\t\t   | Localidad | Pedidos Pendientes |\n");
+			printf("\t\t\t\t\t\t\t\t   |___________|____________________|\n");
 
-			for(int i = 0; i < lenClients; i++)
+			for(int i = 0; i < clientsLen; i++)
 			{
 				if(clientList[i].isEmpty == FULL && clientList[i].localityId == localityFoundId)
 				{
 					ordersByLocalityCounter+= deliverOrders(ordersList, lenOrders, clientList[i].clientId);
 				}
 			}
-			printf("| %10s | %10d |\n",
+			printf("\t\t\t\t\t\t\t\t   |%10s |       %5d        |\n",
 			locality,
 			ordersByLocalityCounter);
 
@@ -206,62 +244,284 @@ int showPendingOrdersByLocality (sLocality* localitiesList, eClients* clientList
 
 			return EXIT_SUCCESS;
 		}
-
+	}
 	return state;
 }
 
-
-int getAveragePP (sOrders* ordersList, int lenOrders, int id)
+int ppAcumulator (sPlastics* plasticList,int lenPlastic, int id) // 10
 {
 	int ppAcumulator;
-	int ppAverageResults;
-	int clientsCounter;
 
-	clientsCounter = 0;
 	ppAcumulator = 0;
 
-	for(int i = 0; i < lenOrders; i++)
+	if(plasticList != NULL && lenPlastic > 0)
 	{
-		if(ordersList[i].isEmpty == FULL && ordersList[i].status == COMPLETED
-		&& ordersList[i].clientId == id)
+		for(int i = 0; i < lenPlastic; i++)
 		{
-			clientsCounter++;
-			ppAcumulator += ordersList[i].PP;
+			if(plasticList[i].isEmpty == FULL && plasticList[i].orderId == id)
+			{
+				ppAcumulator = ppAcumulator + plasticList[i].PP;
+			}
 		}
 	}
 
-	if(clientsCounter > 0)
+	return ppAcumulator;
+}
+
+int countClientsByOrder (sOrders* ordersList, sPlastics* plasticsList,int ordersLen, int id)
+{
+	int clientsCounter;
+	int ppAverageResults;
+	int acumulatorReturn;
+
+	clientsCounter = 0;
+	acumulatorReturn = 0;
+	ppAverageResults = 0;
+
+	if(ordersList != NULL && ordersLen > 0)
 	{
-		ppAverageResults = ppAcumulator / clientsCounter;
+		for(int i = 0; i < ordersLen; i++)
+		{
+			if(ordersList[i].isEmpty == FULL && ordersList[i].status == COMPLETED
+			&& ordersList[i].clientId == id)
+			{
+				acumulatorReturn += ppAcumulator(plasticsList, ordersLen, ordersList[i].orderId);
+				clientsCounter++;
+
+			}
+		}
+		if(clientsCounter > 0)
+		{
+			ppAverageResults = acumulatorReturn / clientsCounter;
+		}
 	}
 
 	return ppAverageResults;
 }
 
 
-int averagePPRecicledByClient (eClients* clientList, sOrders* ordersList, int lenClients, int lenOrders)
+int averagePPRecicledByClient (eClients* clientList, sOrders* ordersList,sPlastics* plasticsList, int clientsLen, int ordersLen)
 {
 	int state;
 	int ppAverageResults;
+	int i;
+
+	i = 0;
 	state = -1;
 
-	printf("\n| Nombre de Cliente | Promedio de PP reciclado |\n");
-		printf("|____________|______________|\n");
-
-	for(int i = 0; i < lenClients; i++)
+	if(clientList != NULL && ordersList != NULL && clientsLen > 0 && ordersLen > 0)
 	{
-		if(clientList[i].isEmpty == FULL)
-		{
-			ppAverageResults = getAveragePP(ordersList, lenOrders, clientList[i].clientId);
+		printf("\n| Nombre de Cliente | Promedio de PP reciclado |\n");
+		printf("\n|____________|______________|\n");
 
-			printf("| %10s | %10d |\n",
-			clientList[i].companyName,
-			ppAverageResults);
+		for(i = 0; i < clientsLen; i++)
+		{
+			if(clientList[i].isEmpty == FULL)
+			{
+				ppAverageResults = countClientsByOrder(ordersList, plasticsList, ordersLen,clientList[i].clientId);
+				if(ppAverageResults > 0)
+				{
+					printf("| %10s | %10d |\n",
+					clientList[i].companyName,
+					ppAverageResults);
+				}
+			}
+		}
+
+		state = 0;
+	}
+
+
+	return state;
+}
+
+int mostOrdersFinder (sOrders* ordersList, int ordersLen, int id, int status)
+{
+	int contadorPendingOrders;
+
+	contadorPendingOrders = 0;
+
+	if(ordersList != NULL && ordersLen > 0)
+	{
+		for(int i = 0; i < ordersLen; i++)
+		{
+			if((status == 0 || status == 1) && ordersList[i].isEmpty == FULL && ordersList[i].clientId == id && ordersList[i].status == status)
+			{
+				contadorPendingOrders++;
+			}
+			else
+			{
+				if(status == 2 && ordersList[i].isEmpty == FULL && ordersList[i].clientId == id)
+				{
+					contadorPendingOrders++;
+				}
+			}
+		}
+
+	}
+	return contadorPendingOrders;
+}
+
+int clientWithMostOrders (eClients* clientList, sLocality* localitiesList,sOrders* ordersList, int clientsLen, int ordersLen, int status)
+{
+	int state;
+	int posOfMostClient;
+	int maxMostOrders;
+	sLocality auxFoundLocalityId;
+
+	state = -1;
+
+	if(clientList != NULL && ordersList != NULL && clientsLen > 0 && ordersLen > 0)
+	{
+		for(int i = 0; i < clientsLen; i++)
+		{
+			state = mostOrdersFinder(ordersList, ordersLen, clientList[i].clientId, status);
+
+			if(i == 0 || maxMostOrders < state)
+			{
+				maxMostOrders = state;
+				posOfMostClient = i;
+				auxFoundLocalityId = LOC_getOneFromId(localitiesList, MAX, clientList[posOfMostClient].localityId);
+			}
+		}
+		printf("\n \t\t  |ID Cliente|  Nombre de la compañia |          Cuit      |              Direccion    |         Localidad       |   PEDIDOS  |\n");
+		printf(" \t\t  |__________|________________________|____________________|___________________________|_________________________|____________|\n");
+
+		printf("\t\t  | %5d    |    %15s     |    %15s  |%25s |  %18s     |  %5d     |\n",
+		clientList[posOfMostClient].clientId,
+		clientList[posOfMostClient].companyName,
+		clientList[posOfMostClient].cuit,
+		clientList[posOfMostClient].adress,
+		auxFoundLocalityId.locality,
+		maxMostOrders);
+	}
+
+	return state;
+}
+
+int CLI_printOneClientWithLocality(eClients clientList, sLocality* localitiesList, int clientsLen, int localitiesLen)
+{
+	int state;
+	sLocality auxFoundLocalityId;
+
+	state = -1;
+
+	if(localitiesList != NULL && clientsLen > 0 && localitiesLen > 0)
+	{
+		auxFoundLocalityId = LOC_getOneFromId(localitiesList, localitiesLen, clientList.localityId);
+
+		printf("\t\t\t\t  | %5d    |    %15s     |    %15s  |%25s |  %18s      |\n",
+		clientList.clientId,
+		clientList.companyName,
+		clientList.cuit,
+		clientList.adress,
+		auxFoundLocalityId.locality);
+	}
+
+	return state;
+}
+
+int CLI_printClientsListWithLocalities(eClients* clientList, sLocality* localitiesList, int clientsLen, int localitiesLen)
+{
+	int state;
+
+	state = -1;
+
+	if(localitiesList != NULL && clientsLen > 0 && localitiesLen > 0)
+	{
+		printf("\n \t\t\t\t  |ID Cliente|  Nombre de la compañia |          Cuit       |              Direccion    |         Localidad       |\n");
+		printf(" \t\t\t\t  |__________|________________________|_____________________|___________________________|_________________________|\n");
+		for(int i = 0; i < clientsLen; i++)
+		{
+			if(clientList[i].isEmpty == FULL)
+			{
+				CLI_printOneClientWithLocality(clientList[i], localitiesList, clientsLen, localitiesLen);
+			}
+		}
+
+		state = 0;
+	}
+
+	return state;
+}
+
+int printPlasticRecicledByLocality(eClients* clientList, sLocality* localitiesList,sOrders* ordersList, sPlastics* plasticList, int clientsLen, int ordersLen, int* uniqueLocalityID)
+{
+	int state;
+	char locality[MAX];
+	int localityFoundId;
+	sOrders oneOrder;
+	sPlastics oneRecicledOrder;
+	int ppAcumulator;
+	int LDPEAcumulator;
+	int HDPEAcumulator;
+	int thrashAcumulator;
+
+
+	ppAcumulator = 0;
+	LDPEAcumulator = 0;
+	HDPEAcumulator = 0;
+	thrashAcumulator = 0;
+
+
+	state = -1;
+
+	if(clientList != NULL && localitiesList != NULL
+	&& ordersList != NULL && plasticList != NULL
+	&& clientsLen > 0 && ordersLen > 0)
+	{
+		getValidLocality("\n\t\t\t\t\t\tIngrese la localidad de donde quiere filtrar sus pedidos: ",
+		"\t\t\t\t\t\tERROR - (RE-Ingrese la localidad de donde quiere filtrar sus pedidos) - ERROR : \n",
+		locality);
+
+		FormartearCadena(locality);
+
+		localityFoundId = LOC_search(localitiesList, clientsLen, locality, uniqueLocalityID);
+
+		if(localityFoundId != 0)
+		{
+			printf("\n\n\t\t\t\t\t\tLa localidad que has elegido para  filtar los pedidos es %s\n\n", locality);
+
+			printf("\n \t|      Nombre       |        Cuit     |         Direccion        |      Localidad     | Cantidad HDPE  |   Cantidad LDPE  | Cantidad PP | Cantidad no reciclable|\n");
+			printf(" \t|___________________|_________________|__________________________|____________________|________________|__________________|_____________|_______________________|\n");
+
+			for(int i = 0; i < clientsLen; i++)
+			{
+				if(clientList[i].isEmpty == FULL && clientList[i].localityId == localityFoundId)
+				{
+					oneOrder = bringOrders(ordersList, ordersLen, clientList[i].clientId);
+					oneRecicledOrder = bringPlasticTypes(plasticList, ordersLen, oneOrder.orderId);
+
+					ppAcumulator += oneRecicledOrder.PP;
+					LDPEAcumulator +=oneRecicledOrder.LDPE;
+					HDPEAcumulator += oneRecicledOrder.HDPE;
+					thrashAcumulator += oneRecicledOrder.desechableThrash;
+
+					if(oneOrder.status == COMPLETED && oneRecicledOrder.isEmpty == FULL)
+					{
+						printf(" \t|%13s      |  %10s  | %23s  |%12s        |      %5d     |    %5d         |   %5d     |      %5d            |\n" ,
+						clientList[i].companyName,
+						clientList[i].cuit,
+						clientList[i].adress,
+						locality,
+						ppAcumulator,
+						LDPEAcumulator,
+						HDPEAcumulator,
+						thrashAcumulator);
+						state = 0;
+					}
+				}
+			}
 		}
 	}
+
+
 
 	state = 0;
 
 	return state;
 }
+
+
+
 
