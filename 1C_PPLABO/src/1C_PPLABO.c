@@ -174,7 +174,7 @@ int main(void)
 				clientWithMostOrders(clientList, localitiesList,ordersList, MAX, MAX2, ALL);
 			break;
 			case 14:
-				printPlasticRecicledByLocality(clientList, localitiesList, ordersList, plasticsList, MAX, MAX2, &uniqueLocalityID);
+				plasticRecicledByLocality(clientList, localitiesList, ordersList, plasticsList, MAX, MAX2, &uniqueLocalityID);
 			break;
 			case 15:
 

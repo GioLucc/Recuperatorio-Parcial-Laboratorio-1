@@ -58,11 +58,7 @@ sPlastics bringPlasticTypes (sPlastics* plasticList, int plasticLen, int id)
 		{
 			if(plasticList[i].isEmpty == FULL && plasticList[i].orderId == id)
 			{
-				oneProcessedOrder.HDPE = plasticList[i].HDPE;
-				oneProcessedOrder.LDPE = plasticList[i].LDPE;
-				oneProcessedOrder.PP = plasticList[i].PP;
-				oneProcessedOrder.desechableThrash = plasticList[i].desechableThrash;
-				oneProcessedOrder.orderId = plasticList[i].orderId;
+				oneProcessedOrder = plasticList[i];
 				break;
 			}
 		}
@@ -445,24 +441,54 @@ int CLI_printClientsListWithLocalities(eClients* clientList, sLocality* localiti
 	return state;
 }
 
-int printPlasticRecicledByLocality(eClients* clientList, sLocality* localitiesList,sOrders* ordersList, sPlastics* plasticList, int clientsLen, int ordersLen, int* uniqueLocalityID)
+int printplasticRecicledByLocality(eClients* clientList, sLocality* localitiesList,sOrders* ordersList, sPlastics* plasticList, int clientsLen, int ordersLen, char locality[], int id)
 {
 	int state;
-	char locality[MAX];
-	int localityFoundId;
-	sOrders oneOrder;
-	sPlastics oneRecicledOrder;
+	sPlastics auxPlastic;
 	int ppAcumulator;
 	int LDPEAcumulator;
 	int HDPEAcumulator;
 	int thrashAcumulator;
-
 
 	ppAcumulator = 0;
 	LDPEAcumulator = 0;
 	HDPEAcumulator = 0;
 	thrashAcumulator = 0;
 
+	state = -1;
+
+	for(int i = 0; i < ordersLen; i++)
+	{
+		if(ordersList[i].clientId == id && ordersList[i].status == COMPLETED)
+		{
+			auxPlastic = bringPlasticTypes(plasticList, ordersLen, ordersList[i].orderId);
+
+			if(auxPlastic.isEmpty == FULL )
+			{
+				ppAcumulator += auxPlastic.PP;
+				LDPEAcumulator +=auxPlastic.LDPE;
+				HDPEAcumulator += auxPlastic.HDPE;
+				thrashAcumulator += auxPlastic.desechableThrash;
+				state = 0;
+			}
+		}
+	}
+
+		printf(" \t|%12s        |      %5d     |    %5d         |   %5d     |      %5d            |\n" ,
+		locality,
+		HDPEAcumulator,
+		LDPEAcumulator,
+		ppAcumulator,
+		thrashAcumulator);
+
+	return state;
+}
+
+int plasticRecicledByLocality(eClients* clientList, sLocality* localitiesList,sOrders* ordersList, sPlastics* plasticList, int clientsLen, int ordersLen, int* uniqueLocalityID)
+{
+	int state;
+	char locality[MAX];
+	int localityFoundId;
 
 	state = -1;
 
@@ -482,43 +508,19 @@ int printPlasticRecicledByLocality(eClients* clientList, sLocality* localitiesLi
 		{
 			printf("\n\n\t\t\t\t\t\tLa localidad que has elegido para  filtar los pedidos es %s\n\n", locality);
 
-			printf("\n \t|      Nombre       |        Cuit     |         Direccion        |      Localidad     | Cantidad HDPE  |   Cantidad LDPE  | Cantidad PP | Cantidad no reciclable|\n");
-			printf(" \t|___________________|_________________|__________________________|____________________|________________|__________________|_____________|_______________________|\n");
+			printf("\n \t|      Localidad     | Cantidad HDPE  |   Cantidad LDPE  | Cantidad PP | Cantidad no reciclable|\n");
+			printf(" \t|____________________|________________|__________________|_____________|_______________________|\n");
 
 			for(int i = 0; i < clientsLen; i++)
 			{
 				if(clientList[i].isEmpty == FULL && clientList[i].localityId == localityFoundId)
 				{
-					oneOrder = bringOrders(ordersList, ordersLen, clientList[i].clientId);
-					oneRecicledOrder = bringPlasticTypes(plasticList, ordersLen, oneOrder.orderId);
-
-					ppAcumulator += oneRecicledOrder.PP;
-					LDPEAcumulator +=oneRecicledOrder.LDPE;
-					HDPEAcumulator += oneRecicledOrder.HDPE;
-					thrashAcumulator += oneRecicledOrder.desechableThrash;
-
-					if(oneOrder.status == COMPLETED && oneRecicledOrder.isEmpty == FULL)
-					{
-						printf(" \t|%13s      |  %10s  | %23s  |%12s        |      %5d     |    %5d         |   %5d     |      %5d            |\n" ,
-						clientList[i].companyName,
-						clientList[i].cuit,
-						clientList[i].adress,
-						locality,
-						ppAcumulator,
-						LDPEAcumulator,
-						HDPEAcumulator,
-						thrashAcumulator);
-						state = 0;
-					}
+					printplasticRecicledByLocality(clientList, localitiesList, ordersList, plasticList, clientsLen, ordersLen, locality, clientList[i].clientId);
+					state = 0;
 				}
 			}
 		}
 	}
-
-
-
-	state = 0;
-
 	return state;
 }
 

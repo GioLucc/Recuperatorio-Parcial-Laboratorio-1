@@ -25,7 +25,8 @@ int showCompleteOrdersWithWeight (eClients* clientList, sOrders* ordersList, sPl
 int showPendingOrdersByLocality (sLocality* localitiesList, eClients* clientList, sOrders* ordersList, int lenClients, int lenOrders, int* uniqueLocalityID); // 9
 int averagePPRecicledByClient (eClients* clientList, sOrders* ordersList,sPlastics* plasticList, int clientsLen, int ordersLen); // 10
 int clientWithMostOrders (eClients* clientList, sLocality* localitiesList,sOrders* ordersList, int clientsLen, int ordersLen, int status); // 11 12 13
-int printPlasticRecicledByLocality(eClients* clientList, sLocality* localitiesList,sOrders* ordersList, sPlastics* plasticList, int clientsLen, int ordersLen, int* uniqueLocalityID); // 14
+int printplasticRecicledByLocality(eClients* clientList, sLocality* localitiesList,sOrders* ordersList, sPlastics* plasticList, int clientsLen, int ordersLen, char locality[], int id);
+int plasticRecicledByLocality(eClients* clientList, sLocality* localitiesList,sOrders* ordersList, sPlastics* plasticList, int clientsLen, int ordersLen, int* uniqueLocalityID);
 int CLI_printOneClientWithLocality(eClients clientList, sLocality* localitiesList, int clientsLen, int localitiesLen);
 int CLI_printClientsListWithLocalities(eClients* clientList, sLocality* localitiesList, int clientsLen, int localitiesLen);
 
