@@ -45,7 +45,7 @@ int freeOrderSpot (sOrders* ordersList, int len)
 	return position;
 }
 
-int newOrder (eClients* clientList, sOrders* ordersList, sLocality* localitiesList, int len, int* uniqueOrderID)
+int newOrder (eClients* clientList, sOrders* ordersList, sLocality* localitiesList, int len, int* uniqueOrderID) //
 {
 	sOrders newOrder;
 	int posToSync;
@@ -55,19 +55,19 @@ int newOrder (eClients* clientList, sOrders* ordersList, sLocality* localitiesLi
 		*uniqueOrderID = *uniqueOrderID+1;
 
 		posToSync = idAsk(clientList, localitiesList, len);
-		newOrder.clientId = clientList[posToSync].clientId;
-		newOrder.orderWeight = getValidInt("\t\t\tIngrese el peso del pedido de recoleccion: ",
-				"\t\t\tERROR - (Has ingresado un numero no contemplado en el menu reintente) - ERROR ", 100, 100000);
+		newOrder.clientId = clientList[posToSync].clientId; /// FK
+		newOrder.orderWeight = getValidInt("\t\t\t\t\t\t\tIngrese el peso del pedido de recoleccion que desea crear: ",
+				"\t\t\t\t\t\tERROR - (Has ingresado un numero no contemplado en el menu reintente) - ERROR ", 100, 100000);
 		newOrder.orderId = *uniqueOrderID;
 		newOrder.status = PENDING;
 
-		addOrder(ordersList,len,newOrder.clientId,newOrder.orderWeight,newOrder.orderId,newOrder.status);
+		addOrder(ordersList,len,newOrder.clientId,newOrder.orderWeight,newOrder.orderId,newOrder.status); ///
 	}
 
 	return 1;
 }
 
-int addOrder (sOrders* ordersList, int len, int clientId , int orderWeight, int orderId, int status)
+int addOrder (sOrders* ordersList, int len, int clientId , int orderWeight, int orderId, int status) //
 {
 	int pos;
 
@@ -127,7 +127,7 @@ int showListOfOrders (sOrders* ordersList, int len)
 	return state;
 }
 
-int arrayChargeOrders (sOrders* ordersList, eClients* clientList, int len, int* uniqueOrderID)
+int arrayChargeOrders (sOrders* ordersList, eClients* clientList, int len, int* uniqueOrderID) ///
 {
 	int weight;
 	int status;
@@ -153,7 +153,7 @@ int arrayChargeOrders (sOrders* ordersList, eClients* clientList, int len, int* 
 	return 1;
 }
 
-int idOrderAskForProcess(eClients* clientList, sOrders* ordersList, int clientsLen, int ordersLen)
+int idOrderAskForProcess(eClients* clientList, sOrders* ordersList, int clientsLen, int ordersLen) ///
 {
 	int enteredId;
 	int positionToUse;
@@ -161,8 +161,8 @@ int idOrderAskForProcess(eClients* clientList, sOrders* ordersList, int clientsL
 
 	if(ordersList != NULL && clientList != NULL && ordersLen > 0)
 	{
-		printf("\n|  ID Orden |         Peso|     Client ID |       Estado |\n");
-		printf("|____________|_____________|______________|_____________|\n");
+		printf("\n\t\t\t\t\t\t\t|  ID Orden  |    Peso     |  Client ID   |   Estado     |\n");
+		printf("\t\t\t\t\t\t\t|____________|_____________|______________|______________|\n");
 
 		for(int i = 0; i < ordersLen; i++)
 		{
@@ -170,7 +170,7 @@ int idOrderAskForProcess(eClients* clientList, sOrders* ordersList, int clientsL
 			{
 				oneClient = bringClients(clientList, clientsLen, ordersList[i].clientId);
 
-				printf("| %10d | %10d | %10d | %10d  |\n",
+				printf("\t\t\t\t\t\t\t| %10d | %10d  | %10d   | %10d   |\n",
 				ordersList[i].orderId,
 				ordersList[i].orderWeight,
 				oneClient.clientId,
@@ -178,8 +178,8 @@ int idOrderAskForProcess(eClients* clientList, sOrders* ordersList, int clientsL
 			}
 		}
 
-		enteredId = getValidInt("Despues de haber visto la lista de los Id's de los clientes disponibles, a cual desea procesar?",
-		"ERROR - (Has ingresado un ID no existente intentelo nuevamente) - ERROR", 1, 100);
+		enteredId = getValidInt("\n\n\t\t\t\t\tDespues de haber visto la lista de los Id's de los clientes disponibles, a cual desea procesar?",
+		"\n\n\t\t\t\t\tERROR - (Has ingresado un ID no existente intentelo nuevamente) - ERROR", 1, 100);
 
 		positionToUse = orderIdValidation (ordersList, ordersLen, enteredId);
 	}
@@ -232,7 +232,7 @@ int orderIdValidation (sOrders* ordersList, int len, int enteredId)
 	return pos;
 }
 
-int processingOrder (eClients* clientList, sOrders* ordersList, sPlastics* plasticsList, int clientsLen, int ordersLen)
+int processingOrder (eClients* clientList, sOrders* ordersList, sPlastics* plasticsList, int clientsLen, int ordersLen) //
 {
 	int state;
 	int posOrderToProcess;

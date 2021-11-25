@@ -15,20 +15,13 @@ void printMenu(void)
 			printf("\t\t\t\t\t\t\t\t\t\tDalaran\n");
 			printf("\t\t\t\t================================================================================================\n\t\t\t\t\t\t\t\t\t\n");
 			printf("\t\t\t\t\t\t\t              ( V ) Menu de Opciones ( V )\t\t\t\t  \n\n");
-			printf("\t\t\t\t\t\t\t\t      > 1 - Alta de cliente - 1 <\n\n");
+			printf("\t\t\t\t      > 1 - Alta de cliente - Alta de Localidades - Baja de Localidades - Cargar Localidades - 1 <\n\n");
 			printf("\t\t\t\t\t\t\t         > 2 - Modificar datos de cliente. - 2 <\n\n");
 			printf("\t\t\t\t\t\t\t              > 3 - Baja de cliente. - 3 <\n\n");
 			printf("\t\t\t\t\t\t\t         > 4 - Crear pedido de recolección - 4 <\n\n");
 			printf("\t\t\t\t\t\t\t              > 5 - Procesar residuos - 5 <\n\n");
-			printf("\t\t\t\t\t\t\t              > 6 - Imprimir Clientes - 6 <\n\n");
-			printf("\t\t\t\t\t\t\t         > 7 - Imprimir Pedidos pendientes - 7 <\n\n");
-			printf("\t\t\t\t\t\t\t         > 8 - Imprimir Pedidos procesados. - 8 <\n\n");
-			printf("\t\t\t\t   > 9 - Ingresar una localidad e indicar la cantidad de pedidos pendientes para dicha localidad. - 9 <\n\n");
-			printf("\t\t\t\t\t     > 10 - Cantidad de kilos de polipropileno reciclado promedio por cliente. - 10 <\n\n");
-			printf("\t\t\t\t\t\t\t\t\t  > 11 - Salir. - 11 <\n\n\n");
-
-
-
+			printf("\t\t\t\t\t\t\t              > 6 - Mostrar Informes - 6 <\n\n");
+			printf("\t\t\t\t\t\t\t                    > 7 - Salir - 7 <\n\n");
 }
 
 void printSubMenu(void)
@@ -36,14 +29,32 @@ void printSubMenu(void)
 
 	printf("\n\n\n\t\t\t\t\t\t\t              ( V ) Menu de Opciones ( V )\t\t\t\t  \n\n");
 	printf("\t\t\t\t\t\t\t\t      > 1 - Alta de cliente - 1 <\n\n");
-	printf("\t\t\t\t\t\t\t            > 2 - Agregar localidad. - 2 <\n\n");
-	printf("\t\t\t\t\t\t              > 3 - Cargar localidades predeterminadas. - 3 <\n\n");
-	printf("\t\t\t\t\t\t\t       > 4 - Cargar Clientes predeterminados. - 4 <\n\n");
-	printf("\t\t\t\t\t\t\t          > 5 - Volver al menu principal. - 5 <\n\n");
+	printf("\t\t\t\t\t\t\t             > 2 - Agregar Localidad. - 2 <\n\n");
+	printf("\t\t\t\t\t\t                     > 3 - Baja de Localidad - 3 <\n\n");
+	printf("\t\t\t\t\t\t\t       > 4 - Cargar localidades predeterminadas. - 4 <\n\n");
+	printf("\t\t\t\t\t\t\t     > 5 - Mostrar lista de localidades existentes. - 5 <\n\n");
+	printf("\t\t\t\t\t           > 6 - Cargar localidades predeterminadas y clientes de prueba. - 6 <\n\n");
+	printf("\t\t\t\t\t\t\t          > 7 - Volver al menu principal. - 7 <\n\n");
 
 }
 
-int getValidInt(char mensaje [], char error [], int min, int max)
+void printInformsMenu(void)
+{
+	printf("\n\n\n\t\t\t\t\t\t\t              ( V ) Menu de Informes ( V )\t\t\t\t  \n\n");
+	printf("\t\t\t                > 1 - Imprimir Clientes: con todos sus datos y “pedidos de recolección” en “Pendiente”. - 1 <\n\n");
+	printf("\t\t           > 2 - Imprimir Clientes: con pedidos en estado pendiente con CUIT, Direccion y cantidad de kilos a recolectar. - 2 <\n\n");
+	printf("\t\t\t     > 3 - Imprimir Pedidos procesados: Con CUIT, Direccion, cantidad de kilos reciclados de cada tipo de plastico. - 3 <\n\n");
+	printf("\t\t\t\t   > 4 - Ingresar una localidad e indicar la cantidad de pedidos pendientes para dicha localidad. - 4 <\n\n");
+	printf("\t\t\t\t\t     > 5 - Cantidad de kilos de polipropileno reciclado promedio por cliente. - 5 <\n\n");
+	printf("\t\t\t\t\t\t              > 6 - Cliente con más pedidos pendientes. - 6 <\n\n");
+	printf("\t\t\t\t\t\t             > 7 - Cliente con más pedidos completados. - 7 <\n\n");
+	printf("\t\t\t\t\t\t\t         > 8 -  Cliente con más pedidos. - 8 <\n\n");
+	printf("\t\t\t             > 9 - Ingrese una localidad para mostrar el total de los plasticos reciclados de esa zona. - 9 <\n\n");
+	printf("\t\t\t\t\t\t\t\t  > 10 - Mostrar Lista de clientes. - 10 <\n\n");
+	printf("\t\t\t\t\t\t\t\t         > 11 - Salir. - 11 <\n\n\n");
+}
+
+int getValidInt(char mensaje [], char error [], int min, int max) ///
 {
 	char integrer[MAX];
 	int validIntegrer;
@@ -54,7 +65,7 @@ int getValidInt(char mensaje [], char error [], int min, int max)
 
 }
 
-int OnlyIntegrersValidation(char integrer [],char error [], char mensaje[], int min, int max)
+int OnlyIntegrersValidation(char integrer [],char error [], char mensaje[], int min, int max) ///
 {
 	int resultado = 0;
 	int valido;
@@ -74,7 +85,6 @@ int OnlyIntegrersValidation(char integrer [],char error [], char mensaje[], int 
 			printf("\n\n\t\t\t\t\t    ERROR - (Has ingresado %s y solo se aceptan numeros) - ERROR\n", integrer);
 			valido = 0;
 		}
-
 
 		if (valido == 1)
 		{
@@ -112,7 +122,7 @@ int askForAdress (char message[], char str[])
     return 1;
 }
 
-int getStringVerificado(char mensaje[], char mensajeError[], char *input)
+int getStringVerificado(char mensaje[], char mensajeError[], char *input) ///
 {
     int retorno = -1;
     char aux[256];
@@ -134,59 +144,7 @@ int getStringVerificado(char mensaje[], char mensajeError[], char *input)
     return retorno;
 }
 
-int argentinianCuitValidation (char mensaje[], char mensajeError[], char *input)
-{
-	int i;
-	int state;
-	char aux [12];
-
-	i = 0;
-	state = -1;
-
-	getString(mensaje, aux);
-
-	while(state == -1)
-	{
-		/*
-		for(int i = 0; i < 12; i++)
-		{
-			if(aux[0] && aux[1] > 0 && aux[2] == '-' &&
-			   aux[3] && aux[4] && aux[5] && aux[6]
-		   	   && aux[7] && aux[8] && aux[9] && aux[10] > 0 &&
-			   aux[11] == '-' && aux[12] > 0)
-			{
-				state = 0;
-				strcpy(input, aux);
-			}
-			else
-			{
-				state = -1;
-				getString(mensajeError, aux);
-
-
-
-			}
-		}
-		*/
-			while(aux[i] != '\0')
-		   {
-			   if(aux[0] > 0 && aux[1] > 0 && aux[2] == '-' &&
-					   aux[3] && aux[4] && aux[5] && aux[6]
-					   && aux[7] && aux[8] && aux[9] && aux[10] > 0 &&
-					   aux[11] == '-' && aux[12] > 0)
-				   return 0;
-			   i++;
-		   }
-			state = 0;
-			strcpy(input, aux);
-	}
-
-	return state;
-
-
-}
-
-int getValidLocality(char mensaje[], char mensajeError[], char *input)
+int getValidLocality(char mensaje[], char mensajeError[], char *input) ///
 {
     int retorno = -1;
     char aux[256];
@@ -222,7 +180,7 @@ int OnlyCharacterValidation(char str[])
    return 1;
 }
 
-void FormartearCadena(char str[])
+void FormartearCadena(char str[]) ///
 {
 	int strLenght;
 	int i;

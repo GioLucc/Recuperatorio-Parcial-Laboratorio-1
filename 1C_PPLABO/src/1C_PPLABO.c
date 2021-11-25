@@ -33,6 +33,8 @@ de plástico.
 11) Cliente con más pedidos pendientes.
 12) Cliente con más pedidos completados.
 13) Cliente con más pedidos.
+14) Ingresar una localidad para filtrar la cantidad de HDPE - LDPE - PP - Desechable Trash y así mostrar el total reciclado de esa zona.
+15) Mostrar Lista de clientes
 Los tipos de plástico que la empresa puede reciclar son:
 
 • HDPE: Polietileno de alta densidad (Envases para lácteos, perfumes, detergentes líquidos, etc.)
@@ -64,31 +66,47 @@ de la cátedra.
 int main(void)
 {
 	setbuf(stdout,NULL);
-	int menuOption;
+
 	eClients clientList[MAX];
 	sOrders ordersList[MAX2];
+
 	sLocality localitiesList[MAX];
 	sPlastics plasticsList[MAX2];
+
 	int uniqueID;
 	int uniqueOrderID;
 	int uniqueLocalityID;
-	int subMenu;
-	int maxHardcodeLocalitiesFlag;
 
+	int menuOption;
+	int subMenu;
+
+	int maxHardcodeLocalitiesFlag;
+	int clientsCounter;
+	int ordersCounter;
+	int firstObligatoryLocality;
+
+	/// Flags
+	ordersCounter = 0;
+	firstObligatoryLocality = 0;
+	clientsCounter = 0;
 	maxHardcodeLocalitiesFlag = 0;
+
+	/// Id's Generators
 	uniqueOrderID = 0;
 	uniqueID = 0;
 	uniqueLocalityID = 0;
 
+	/// Init Arrays
 	initOrders(ordersList, MAX2);
 	initClients(clientList, MAX);
 	LOC_init(localitiesList,MAX);
 	PLA_initArray(plasticsList, MAX2);
+
 	do
 	{
 		printMenu();
-		menuOption = getValidInt("\n\t\t\t\t\t\t\tIngrese una opcion del menu para realizar del 1 al 10: ",
-				"\n\n\t\t\t\t      ERROR - (Has ingresado un numero no contemplado en el menu reintente) - ERROR\n\n", 1, 16);
+		menuOption = getValidInt("\n\t\t\t\t\t\t\tIngrese una opcion del menu para realizar del 1 al 7: ",
+		"\n\n\t\t\t\t      ERROR - (Has ingresado un numero no contemplado en el menu reintente) - ERROR\n\n", 1, 7);
 
 		switch(menuOption)
 		{
@@ -96,29 +114,60 @@ int main(void)
 				do
 				{
 					printSubMenu();
-					subMenu = getValidInt("\n\t\t\t\t\t\t\tIngrese una opcion del menu para realizar del 1 al 5: ",
+					subMenu = getValidInt("\n\t\t\t\t\t\t\tIngrese una opcion del menu para realizar del 1 al 7: ",
 					 "\n\n\t\t\t\t\tERROR - (Has ingresado un numero no contemplado en el menu reintente) - ERROR\n\n",
-					 1, 5);
+					 1, 7);
 					switch(subMenu)
 					{
 						case 1:
-							newClient(clientList, localitiesList, MAX, &uniqueID, &uniqueLocalityID);
+							if(firstObligatoryLocality > 0)
+							{
+								newClient(clientList, localitiesList, MAX, &uniqueID, &uniqueLocalityID);
+								printf("\n\n\t\t\t\t\t\t\t\t\tMostrando nuevo cliente");
+
+								CLI_printClientsListWithLocalities(clientList, localitiesList, MAX, MAX);
+								clientsCounter++;
+							}
+							else
+							{
+								printf("\n\n\t\t\t\t\t\t\tERROR - (Debe crear al menos una localidad) - ERROR");
+							}
 						break;
 
 						case 2:
 							LOC_newLocality(localitiesList, MAX, &uniqueLocalityID);
-
-
+							firstObligatoryLocality++;
 						break;
 
 						case 3:
+							if(firstObligatoryLocality > 0)
+							{
+								LOC_withdrawal(localitiesList, MAX);
+								firstObligatoryLocality--;
+							}
+							else
+							{
+								printf("\n\n\t\t\t\t\t\tERROR - (Debe crear al menos una localidad antes de poder dar de baja) - ERROR");
+							}
+						break;
+						case 4:
+							LOC_hardcodeLocalities(localitiesList,MAX,&uniqueLocalityID);
+							firstObligatoryLocality = 12;
+						break;
+						case 5:
+								LOC_printListOfLocalities(localitiesList, MAX);
+						break;
+						case 6:
 							if(maxHardcodeLocalitiesFlag == 0)
 							{
 								LOC_hardcodeLocalities(localitiesList,MAX,&uniqueLocalityID);
 								CLI_createRandomClients(clientList, MAX, &uniqueID);
 								arrayChargeOrders(ordersList,clientList,MAX,&uniqueOrderID); /// Ordenes
-								maxHardcodeLocalitiesFlag = 1;
+								CLI_printClientsListWithLocalities(clientList, localitiesList, MAX, MAX);
 
+								maxHardcodeLocalitiesFlag = 1;
+								clientsCounter+=clientsCounter+12;
+								ordersCounter+=ordersCounter+12;
 							}
 							else
 							{
@@ -127,63 +176,167 @@ int main(void)
 										"\n\t\t\t\t\t\t Volviendo al menu\n\n");
 							}
 						break;
-
-						case 4:
-
-
-						break;
 					}
-				}while(subMenu != 5);
-
+				}while(subMenu != 7);
 			break;
 
 			case 2:
-				modifyClient(clientList, localitiesList, MAX, &uniqueLocalityID);
+				if(clientsCounter > 0)
+				{
+					modifyClient(clientList, localitiesList, MAX, &uniqueLocalityID);
+				}
+				else
+				{
+					printf("\n\t\t\t\t\t\t\tNo hay ningun cliente existente, cree uno antes de poder modificarlo!");
+				}
 			break;
 			case 3:
-				withdrawalClient(clientList, localitiesList, MAX);
+				if(clientsCounter > 0)
+				{
+					withdrawalClient(clientList, localitiesList, MAX);
+					clientsCounter--;
+				}
+				else
+				{
+					printf("\n\t\t\t\t\t\t\tNo hay ningun cliente existente, cree uno antes de poder modificarlo!");
+				}
 			break;
 			case 4:
-				newOrder(clientList, ordersList, localitiesList, MAX, &uniqueOrderID);
+				if(clientsCounter > 0)
+				{
+					newOrder(clientList, ordersList, localitiesList, MAX, &uniqueOrderID);
+					ordersCounter++;
+				}
+				else
+				{
+					printf("\n\t\t\t\t\t\t\tNo hay ningun cliente existente, cree uno antes de poder asignarle un pedido!");
+				}
 			break;
 			case 5:
-				processingOrder(clientList, ordersList, plasticsList, MAX, MAX2);
+				if(ordersCounter > 0)
+				{
+					processingOrder(clientList, ordersList, plasticsList, MAX, MAX2);
+				}
+				else
+				{
+					printf("\n\t\t\t\t\t\t\tNo hay ninguna orden creada, cree una antes de poder procesarla!");
+				}
 			break;
 			case 6:
-				showClientsWithPendingOrders(clientList, ordersList, localitiesList, MAX, MAX2, MAX);
-			break;
-			case 7:
-				showPedingOrdersWithClientsInfo(clientList, ordersList, MAX, MAX2);
-			break;
-			case 8:
-				showCompleteOrdersWithWeight(clientList, ordersList, plasticsList, MAX, MAX2);
-			break;
-			case 9:
-				showPendingOrdersByLocality(localitiesList,clientList, ordersList,MAX,MAX2,&uniqueLocalityID);
-			break;
-			case 10:
-				averagePPRecicledByClient(clientList, ordersList, plasticsList, MAX, MAX2);
-			break;
-			case 11:
-				clientWithMostOrders(clientList, localitiesList,ordersList, MAX, MAX2, PENDING);
-			break;
-			case 12:
-				clientWithMostOrders(clientList, localitiesList,ordersList, MAX, MAX2, COMPLETED);
-			break;
-			case 13:
-				clientWithMostOrders(clientList, localitiesList,ordersList, MAX, MAX2, ALL);
-			break;
-			case 14:
-				plasticRecicledByLocality(clientList, localitiesList, ordersList, plasticsList, MAX, MAX2, &uniqueLocalityID);
-			break;
-			case 15:
+				do
+				{
+					printInformsMenu();
+					menuOption = getValidInt("\n\t\t\t\t\t\t\tIngrese una opcion del menu para realizar del 1 al 11: ",
+					"\n\n\t\t\t\t      ERROR - (Has ingresado un numero no contemplado en el menu reintente) - ERROR\n\n", 1, 11);
 
-				arrayChargeOrders(ordersList,clientList,MAX,&uniqueOrderID); /// Ordenes
+					switch(menuOption)
+					{
+						case 1:
+							if(clientsCounter > 0 && ordersCounter > 0)
+							{
+								showClientsWithPendingOrders(clientList, ordersList, localitiesList, MAX, MAX2, MAX);
+							}
+							else
+							{
+								printf("\n\t\t\t\t\t\t\tNo hay clientes o ordenes creadas, cree uno de ambos para poder entrar a esta opcion");
+							}
+						break;
+						case 2:
+							if(clientsCounter > 0 && ordersCounter > 0)
+							{
+								showPedingOrdersWithClientsInfo(clientList, ordersList, MAX, MAX2);
+							}
+							else
+							{
+								printf("\n\t\t\t\t\t\t\tNo hay clientes o ordenes creadas, cree uno de ambos para poder entrar a esta opcion");
+							}
+						break;
+						case 3:
+							if(clientsCounter > 0 && ordersCounter > 0)
+							{
+								showCompleteOrdersWithWeight(clientList, ordersList, plasticsList, MAX, MAX2);
+							}
+							else
+							{
+								printf("\n\t\t\t\t\t\t\tNo hay clientes o ordenes creadas, cree uno de ambos para poder entrar a esta opcion");
+							}
+						break;
+						case 4:
+							if(clientsCounter > 0 && ordersCounter > 0)
+							{
+								showPendingOrdersByLocality(localitiesList,clientList, ordersList,MAX,MAX2,&uniqueLocalityID);
+							}
+							else
+							{
+								printf("\n\t\t\t\t\t\t\tNo hay clientes o ordenes creadas, cree uno de ambos para poder entrar a esta opcion");
+							}
+						break;
+						case 5:
+							if(clientsCounter > 0 && ordersCounter > 0)
+							{
+								averagePPRecicledByClient(clientList, ordersList, plasticsList, MAX, MAX2);
+							}
+							else
+							{
+								printf("\n\t\t\t\t\t\t\tNo hay clientes o ordenes creadas, cree uno de ambos para poder entrar a esta opcion");
+							}
+						break;
+						case 6:
+							if(clientsCounter > 0 && ordersCounter > 0)
+							{
+								clientWithMostOrders(clientList, localitiesList,ordersList, MAX, MAX2, PENDING);
+							}
+							else
+							{
+								printf("\n\t\t\t\t\t\t\tNo hay clientes o ordenes creadas, cree uno de ambos para poder entrar a esta opcion");
+							}
+						break;
+						case 7:
+							if(clientsCounter > 0 && ordersCounter > 0)
+							{
+								clientWithMostOrders(clientList, localitiesList,ordersList, MAX, MAX2, COMPLETED);
+							}
+							else
+							{
+								printf("\n\t\t\t\t\t\t\tNo hay clientes o ordenes creadas, cree uno de ambos para poder entrar a esta opcion");
+							}
+						break;
+						case 8:
+							if(clientsCounter > 0 && ordersCounter > 0)
+							{
+								clientWithMostOrders(clientList, localitiesList,ordersList, MAX, MAX2, ALL);
+							}
+							else
+							{
+								printf("\n\t\t\t\t\t\t\tNo hay clientes o ordenes creadas, cree uno de ambos para poder entrar a esta opcion");
+							}
+						break;
+						case 9:
+							if(clientsCounter > 0 && ordersCounter > 0)
+							{
+								plasticRecicledByLocality(clientList, localitiesList, ordersList, plasticsList, MAX, MAX2, &uniqueLocalityID);
+							}
+							else
+							{
+								printf("\n\t\t\t\t\t\t\tNo hay clientes o ordenes creadas, cree uno de ambos para poder entrar a esta opcion");
+							}
+
+						break;
+						case 10:
+							if(clientsCounter > 0)
+							{
+								CLI_printClientsListWithLocalities(clientList, localitiesList, MAX, MAX);
+							}
+							else
+							{
+								printf("\n\t\t\t\t\t\t\tNo hay clientes creados, cree uno poder entrar a esta opcion");
+							}
+						break;
+					}
+				}while (menuOption != 11);
 			break;
-
-		}
-
-	}while(menuOption!= 16);
+			}
+		}while(menuOption!= 7);
 
 
 

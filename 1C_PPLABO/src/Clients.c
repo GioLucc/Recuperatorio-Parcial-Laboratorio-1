@@ -13,7 +13,7 @@
 #include <ctype.h>
 
 
-int initClients (eClients* clientList, int len)
+int initClients (eClients* clientList, int len) ///
 {
 	int state = -1;
 
@@ -27,7 +27,7 @@ int initClients (eClients* clientList, int len)
 	return state;
 }
 
-int freeClientSpot (eClients* clientList, int len)
+int freeClientSpot (eClients* clientList, int len) ///
 {
 	int position;
 
@@ -39,7 +39,7 @@ int freeClientSpot (eClients* clientList, int len)
 		{
 			if(clientList[i].isEmpty == EMPTY)
 			{
-				position = i;
+				position = i; ///
 				break;
 			}
 		}
@@ -48,21 +48,22 @@ int freeClientSpot (eClients* clientList, int len)
 	return position;
 }
 
-int newClient (eClients* clientList, sLocality* localitiesList, int len, int* uniqueID, int* uniqueLocalityID)
+int newClient (eClients* clientList, sLocality* localitiesList, int len, int* uniqueID, int* uniqueLocalityID) //
 {
 	int state;
 	eClients newClient;
 	char auxLocality[MAX];
 	int auxIdlocality;
 
-
 	state = -1;
 	*uniqueID = *uniqueID+1;
 
 	if(clientList != NULL && localitiesList != NULL && len > 0)
 	{
-		getStringVerificado("\n\t\t\t\t\t\t\tIngrese el nombre de su compañia :) : ","\t\t\t\t\t\tERROR - (RE-Ingrese el nombre de su compañia) - ERROR : \n", newClient.companyName);
-		getStringVerificado("\n\t\t\t\t\t\t       Ingrese el cuit de su compañia :) : ","\t\t\t\t\t\tERROR - (RE-Ingrese el cuit de su compañia) - ERROR : \n", newClient.cuit);
+		getStringVerificado("\n\t\t\t\t\t\t\tIngrese el nombre de su compañia :) : ",
+		"\t\t\t\t\t\tERROR - (RE-Ingrese el nombre de su compañia) - ERROR : \n", newClient.companyName);
+		getStringVerificado("\n\t\t\t\t\t\t       Ingrese el cuit de su compañia :) : ",
+		"\t\t\t\t\t\tERROR - (RE-Ingrese el cuit de su compañia) - ERROR : \n", newClient.cuit);
 		askForAdress("\n\t\t\t\t\t\t    Ingrese la direccion de su compañia :) : ", newClient.adress);
 		LOC_printListOfLocalities(localitiesList, MAX);
 		getValidLocality("\n\t\t\t\t\t\t\tIngrese la localidad de su compañia :) : ",
@@ -76,10 +77,11 @@ int newClient (eClients* clientList, sLocality* localitiesList, int len, int* un
 		if(auxIdlocality != 0)
 		{
 			newClient.localityId = auxIdlocality;
+			printf("\n\n\t\t\t\t\t\t Localidad asignada correctamente");
 		}
 		else
 		{
-			printf("\n\nNo existe esa localidad vuelva al menu y creela");
+			printf("\n\n\t\t\t\t\t\tNo existe esa localidad vuelva al menu y creela");
 			return EXIT_SUCCESS;
 		}
 
@@ -92,7 +94,7 @@ int newClient (eClients* clientList, sLocality* localitiesList, int len, int* un
 	return state;
 }
 
-int addClient (eClients* clientList, int len, char companyName [], char cuit[], char adress [], int localityId, int id)
+int addClient (eClients* clientList, int len, char companyName [], char cuit[], char adress [], int localityId, int id) ///
 {
 	int pos;
 
@@ -120,7 +122,7 @@ int idAsk(eClients* clientList, sLocality* localitiesList, int len)
 	{
 		CLI_printClientsListWithLocalities(clientList, localitiesList, 100, 100);
 
-		enteredIdToRemove = getValidInt("\n\n\t\t\t\t\tDespues de haber visto la lista de los Id's disponibles, cual desea modificar?",
+		enteredIdToRemove = getValidInt("\n\n\t\t\t\t\t\t\tDespues de haber visto la lista de los Id's disponibles, cual desea elegir?",
 				"\n\n\t\t\t\t\tERROR - (El id ingresado no existe  intentelo nuevamente) - ERROR", 1, 100);
 
 		positionToUse = idValidation(clientList, localitiesList, len, enteredIdToRemove);
@@ -154,7 +156,7 @@ int idValidation (eClients* clientList, sLocality* localitiesList, int len, int 
 	return pos;
 }
 
-int modifyClient (eClients* clientList, sLocality* localitiesList, int len, int* uniqueLocalityID)
+int modifyClient (eClients* clientList, sLocality* localitiesList, int len, int* uniqueLocalityID) //
 {
 	int positionToUse;
 	int option;
@@ -165,16 +167,16 @@ int modifyClient (eClients* clientList, sLocality* localitiesList, int len, int*
 	{
 		positionToUse = idAsk(clientList, localitiesList, len);
 
-		 option = getValidInt("\n\n\t\t\tPlease enter the option you want to modify { 1 - Adress - 2 - Locality }: ",
+		 option = getValidInt("\n\n\t\t\tIngrese la opcion que desea llevar a cabo para modificar { 1 - Direccion - 2 - Localidad }: ",
 				 "\n\n\t\t\tERROR - (That option to modify doesn't exist try again) - ERROR",1,2);
 		switch(option)
 		{
 			case 1:
-				askForAdress("Ingrese la direccion de su compañia", clientList[positionToUse].adress);
+				askForAdress("\n\t\t\t\t\t\t\t\t\tIngrese la direccion de su compañia: ", clientList[positionToUse].adress);
 			break;
 			case 2:
 				LOC_printListOfLocalities(localitiesList, MAX);
-				getValidLocality("\n\t\t\t\t\t\t\tIngrese la localidad de su compañia :) : ",
+				getValidLocality("\n\t\t\t\t\t\t\t\tIngrese la localidad de su compañia :) : ",
 						"\t\t\t\t\t\tERROR - (RE-Ingrese la localidad de su compañia) - ERROR : \n",
 						auxLocality);
 
@@ -188,7 +190,7 @@ int modifyClient (eClients* clientList, sLocality* localitiesList, int len, int*
 						}
 						else
 						{
-							printf("\n\nNo existe esa localidad vuelva al menu y creela");
+							printf("\n\n\t\t\t\t\tNo existe esa localidad vuelva al menu y creela");
 							return EXIT_SUCCESS;
 						}
 			break;
@@ -197,7 +199,7 @@ int modifyClient (eClients* clientList, sLocality* localitiesList, int len, int*
 	return 1;
 }
 
-int withdrawalClient (eClients* clientList, sLocality* localitiesList, int len)
+int withdrawalClient (eClients* clientList, sLocality* localitiesList, int len) //
 {
 	int state;
 	int positionToUse;
@@ -208,14 +210,12 @@ int withdrawalClient (eClients* clientList, sLocality* localitiesList, int len)
 	{
 		positionToUse = idAsk(clientList, localitiesList, len);
 
-		if(clientList != NULL && len > 0)
-		{
 			if(clientList[positionToUse].isEmpty == FULL)
 			{
-				clientList[positionToUse].isEmpty = EMPTY;
+				clientList[positionToUse].isEmpty = EMPTY; /// Baja logica
 			}
-		}
 	}
+
 	return state;
 }
 
@@ -260,9 +260,9 @@ int showListOfClients (eClients* clientList, int len)
 	return state;
 }
 
+/*
 int arrayCharge (eClients* clientList, int len, int* uniqueID)
 {
-
 	if(clientList != NULL && len > 0)
 	{
 		for(int i = 0; i < 20; i ++)
@@ -274,16 +274,16 @@ int arrayCharge (eClients* clientList, int len, int* uniqueID)
 
 			strcpy(clientList[pos].companyName, "Alberto");
 			strcpy(clientList[pos].cuit, "44-4444444-44");
-			strcpy(clientList[pos].adress, "Tu Mama 44");
+			strcpy(clientList[pos].adress, "Presidente Vigias 44");
 			clientList[pos].localityId = *uniqueID;
 			clientList[pos].clientId = *uniqueID;
 			clientList[pos].isEmpty = FULL;
-
 		}
 	}
-	return 1;
 
+	return 1;
 }
+*/
 
 eClients CLI_getOneFromId(eClients* clientList, int clientsLen, int id)
 {
@@ -315,7 +315,7 @@ int CLI_createRandomClients(eClients* clientList ,int clientsLen,int *uniqueID)
 		char companyName [][MAX] =  {
 		"Coca Cola", "Aguas Beyse", "Ivess","Avalos e Hijos",
 		"El Noble", "Termolab","San Patricia", "Pepsico",
-		"Aguas German", "La Chancha", "Don Mariano",
+		"La Chancha", "Aguas German", "Don Mariano",
 		"Gianni el Noble"};
 
 		char cuit [][MAX] = {

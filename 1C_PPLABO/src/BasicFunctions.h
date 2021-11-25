@@ -17,6 +17,7 @@
 
 void printMenu(void);
 void printSubMenu(void);
+void printInformsMenu (void);
 int getValidInt(char mensaje [], char error [], int min, int max);
 int OnlyIntegrersValidation(char integrer[], char mensaje[],char error [], int min, int max);
 int getString(char mensaje[],char str[]);
@@ -27,5 +28,6 @@ int argentinianCuitValidation (char mensaje[], char mensajeError[], char *input)
 int getValidLocality(char mensaje[], char mensajeError[], char *input);
 int OnlyCharacterValidation(char str[]);
 void FormartearCadena(char str[]);
+
 
 #endif /* BASICFUNCTIONS_H_ */

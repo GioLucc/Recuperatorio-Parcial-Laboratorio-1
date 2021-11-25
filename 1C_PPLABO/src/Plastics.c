@@ -44,7 +44,7 @@ int PLA_freeArraySpot (sPlastics* plasticsList, int plasticsLen)
 	return position;
 }
 
-int PLA_processPlastics (sPlastics* plasticsList, int plasticsLen, int id, int weightOfOrder)
+int PLA_processPlastics (sPlastics* plasticsList, int plasticsLen, int id, int weightOfOrder) //
 {
 	int state;
 	int posToProcess;
@@ -55,46 +55,43 @@ int PLA_processPlastics (sPlastics* plasticsList, int plasticsLen, int id, int w
 	{
 		posToProcess = PLA_freeArraySpot(plasticsList, plasticsLen);
 
-		printf("posToProcess = %d",posToProcess);
-
 		plasticsList[posToProcess].orderId = id;
 
 		if(weightOfOrder > 0)
 		{
+			printf("\n\n\t\t\t\t\t\t\t\t\tEl pedido pesa: %d Kl ",weightOfOrder);
 
-			printf("\n\nEl pedido pesa: %d Kl ",weightOfOrder);
-
-			plasticsList[posToProcess].HDPE = getValidInt("Cuanto de este pedido de recoleccion le corresponde a HDPE?\n",
-			"ERROR - Reingrese un peso correcto - ERROR ", 1, weightOfOrder);
+			plasticsList[posToProcess].HDPE = getValidInt("\n\t\t\t\t\t\t\tCuanto de este pedido de recoleccion le corresponde a HDPE?: ",
+			"\n\t\t\t\t\t\t\tERROR - Reingrese un peso correcto - ERROR ", 1, weightOfOrder);
 
 			weightOfOrder = weightOfOrder - plasticsList[posToProcess].HDPE;
-			printf("\nBasura restante: %d Kl", weightOfOrder);
+			printf("\n\n\t\t\t\t\t\t\t\t\tBasura restante: %d Kl", weightOfOrder);
 		}
 
 		if(weightOfOrder > 0)
 		{
-			printf("\n\nEl pedido pesa: %d Kl",weightOfOrder);
+			printf("\n\n\t\t\t\t\t\t\t\t\tEl pedido pesa: %d Kl",weightOfOrder);
 
-			plasticsList[posToProcess].LDPE = getValidInt("Cuanto de este pedido de recoleccion le corresponde a LDPE?\n",
-			"ERROR - Reingrese un peso correcto - ERROR ", 1, weightOfOrder);
+			plasticsList[posToProcess].LDPE = getValidInt("\n\t\t\t\t\t\t\tCuanto de este pedido de recoleccion le corresponde a LDPE?: ",
+			"\n\t\t\t\t\t\t\tERROR - Reingrese un peso correcto - ERROR ", 1, weightOfOrder);
 
 			weightOfOrder = weightOfOrder - plasticsList[posToProcess].LDPE;
-			printf("\nBasura restante: %d Kl", weightOfOrder);
+			printf("\n\n\t\t\t\t\t\t\t\t\tBasura restante: %d Kl", weightOfOrder);
 		}
 
 		if(weightOfOrder > 0)
 		{
-			printf("\n\nEl pedido pesa: %d Kl",weightOfOrder);
+			printf("\n\n\t\t\t\t\t\t\t\t\tEl pedido pesa: %d Kl",weightOfOrder);
 
-			plasticsList[posToProcess].PP = getValidInt("Cuanto de este pedido de recoleccion le corresponde a PP?\n",
-			"ERROR - Reingrese un peso correcto - ERROR ", 1, weightOfOrder);
+			plasticsList[posToProcess].PP = getValidInt("\n\t\t\t\t\t\t\tCuanto de este pedido de recoleccion le corresponde a PP?: ",
+			"\n\t\t\t\t\t\t\tERROR - Reingrese un peso correcto - ERROR ", 1, weightOfOrder);
 			weightOfOrder = weightOfOrder - plasticsList[posToProcess].PP;
 
-			printf("\nBasura restante: %d Kl", weightOfOrder);
+			printf("\n\n\t\t\t\t\t\t\t\t\tBasura restante: %d Kl", weightOfOrder);
 		}
 
 		plasticsList[posToProcess].desechableThrash = weightOfOrder;
-		printf("\nEl plastico no reciclado será considerado basura y este es de: %d Kl", plasticsList[posToProcess].desechableThrash);
+		printf("\n\t\t\t\t\t\tEl plastico no reciclado será considerado basura y este es de: %d Kl", plasticsList[posToProcess].desechableThrash);
 
 		state = 0;
 		plasticsList[posToProcess].isEmpty = FULL;

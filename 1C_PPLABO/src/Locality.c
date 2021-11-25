@@ -18,7 +18,6 @@ int LOC_hardcodeLocalities (sLocality* localitiesList, int len, int* uniqueLocal
 
 	if(localitiesList != NULL && len > 0)
 	{
-
 		char localidades[][MAX] = { "Abasto", "Agronomía", "Almagro",
 		"Balvanera", "Barracas", "Barrio Norte", "Belgrano", "Boedo", "Caballito", "Capital Federal", "Chacarita", "Coghlan",
 		"Colegiales", "Constitución", "Flores", "Floresta", "La Boca", "Liniers", "Mataderos", "Microcentro", "Monte Castro",
@@ -38,7 +37,7 @@ int LOC_hardcodeLocalities (sLocality* localitiesList, int len, int* uniqueLocal
 	return state;
 }
 
-int LOC_init (sLocality* localitiesList, int localitiesLen)
+int LOC_init (sLocality* localitiesList, int localitiesLen) ///
 {
 	int state = -1;
 
@@ -51,10 +50,9 @@ int LOC_init (sLocality* localitiesList, int localitiesLen)
 	}
 
 	return state;
-
 }
 
-int LOC_newLocality(sLocality* localitiesList, int localitiesLen, int* uniqueLocalityID)
+int LOC_newLocality(sLocality* localitiesList, int localitiesLen, int* uniqueLocalityID) //
 {
 	sLocality newLocality;
 	int state;
@@ -77,10 +75,13 @@ int LOC_newLocality(sLocality* localitiesList, int localitiesLen, int* uniqueLoc
 			*uniqueLocalityID = *uniqueLocalityID+1;
 
 			LOC_chargeLocalitiesList(localitiesList, uniqueLocalityID, MAX, newLocality.locality);
+
+			printf("\n\t\t\t\t\t\t\t  Se agregó satisfactoriamente una nueva localidad!");
 		}
 		else
 		{
 			newLocality.localityId = *uniqueLocalityID;
+			printf("\n\t\t\t\t\t\t\t Esa localidad ya existe, intente creando una nueva!");
 		}
 
 		state = 0;
@@ -88,6 +89,51 @@ int LOC_newLocality(sLocality* localitiesList, int localitiesLen, int* uniqueLoc
 
 	return state;
 }
+
+int LOC_chargeLocalitiesList(sLocality* localitiesList, int* uniqueLocalityID, int localitiesLen, char auxLocality []) //
+{
+	int state;
+
+	state = -1;
+
+	if(localitiesList != NULL && localitiesLen > 0)
+	{
+		for(int i = 0; i < localitiesLen; i++)
+		{
+			if(localitiesList[i].isEmpty == EMPTY)
+			{
+				localitiesList[i].localityId = *uniqueLocalityID;
+				strcpy(localitiesList[i].locality, auxLocality);
+				localitiesList[i].isEmpty = FULL;
+				break;
+			}
+		}
+	}
+
+	return state;
+}
+
+
+int LOC_withdrawal (sLocality* localitiesList, int localitiesLen) //
+{
+	int state;
+	int positionToUse;
+
+	state = -1;
+
+	if(localitiesList != NULL && localitiesLen > 0)
+	{
+		positionToUse = LOC_idAsk(localitiesList, localitiesLen);
+
+		if(localitiesList[positionToUse].isEmpty == FULL)
+		{
+			localitiesList[positionToUse].isEmpty = EMPTY;
+		}
+
+	}
+	return state;
+}
+
 
 int LOC_freeSpot (sLocality* localitiesList, int localitiesLen)
 {
@@ -110,8 +156,6 @@ int LOC_freeSpot (sLocality* localitiesList, int localitiesLen)
 	return position;
 }
 
-
-
 int LOC_search (sLocality* localitiesList, int localitiesLen, char auxLocality [], int* uniqueLocalityID)
 {
 	int foundId;
@@ -124,14 +168,15 @@ int LOC_search (sLocality* localitiesList, int localitiesLen, char auxLocality [
 		{
 			if(strcmp(localitiesList[i].locality, auxLocality) == 0)
 			{
-				foundId = localitiesList[i].localityId; /// devuelvo el id con el state asignado mas abajo en el return
+				foundId = localitiesList[i].localityId;
 			}
 		}
 	}
 	return foundId;
 }
 
-int LOC_chargeLocalitiesList(sLocality* localitiesList, int* uniqueLocalityID, int localitiesLen, char auxLocality [])
+
+int LOC_printListOfLocalities(sLocality* localitiesList, int localitiesLen)
 {
 	int state;
 
@@ -139,49 +184,10 @@ int LOC_chargeLocalitiesList(sLocality* localitiesList, int* uniqueLocalityID, i
 
 	if(localitiesList != NULL && localitiesLen > 0)
 	{
+		printf("\n\t\t\t\t\t\t\t\t      |   Localidad  |  ID de Localidad |\n");
+		printf("\t\t\t\t\t\t\t\t      |______________|__________________|\n");
+
 		for(int i = 0; i < localitiesLen; i++)
-		{
-			if(localitiesList[i].isEmpty == EMPTY)
-			{
-				localitiesList[i].isEmpty = FULL;
-				localitiesList[i].localityId = *uniqueLocalityID;
-				strcpy(localitiesList[i].locality, auxLocality);
-				break;
-			}
-		}
-	}
-
-
-
-	return state;
-}
-
-int LOC_printOneLocality(sLocality localitiesList)
-{
-	int state;
-	state = -1;
-
-		printf("%20s - %10d\n",
-		localitiesList.locality,
-		localitiesList.localityId);
-
-		state = 0;
-
-	return state;
-}
-
-int LOC_printListOfLocalities(sLocality* localitiesList, int len)
-{
-	int state;
-
-	state = -1;
-
-	if(localitiesList != NULL && len > 0)
-	{
-		printf("\n|Localidad | ID de Localidad |\n");
-		printf("|____________|_____________|\n");
-
-		for(int i = 0; i < len; i++)
 		{
 			if(localitiesList[i].isEmpty == FULL)
 			{
@@ -191,6 +197,62 @@ int LOC_printListOfLocalities(sLocality* localitiesList, int len)
 	}
 
 	return state;
+}
+
+int LOC_printOneLocality(sLocality localitiesList)
+{
+	int state;
+	state = -1;
+
+		printf("\t\t\t\t\t\t\t\t    %15s     -     %3d\n",
+		localitiesList.locality,
+		localitiesList.localityId);
+
+		state = 0;
+
+	return state;
+}
+int LOC_idAsk(sLocality* localitiesList, int localitiesLen)
+{
+	int enteredIdToRemove;
+	int positionToUse;
+
+	if(localitiesList != NULL && localitiesLen > 0)
+	{
+		LOC_printListOfLocalities(localitiesList, localitiesLen);
+
+		enteredIdToRemove = getValidInt("\n\n\t\t\t\t\tDespues de haber visto la lista de los Id's de las localidades existentes, cual desea eliminar?",
+				"\n\n\t\t\t\t\tERROR - (El id ingresado no existe intentelo nuevamente) - ERROR", 1, 100);
+
+		positionToUse = LOC_idValidation(localitiesList, localitiesLen, enteredIdToRemove);
+	}
+
+	return positionToUse;
+}
+
+int LOC_idValidation (sLocality* localitiesList, int localitiesLen, int enteredId) ///
+{
+	int pos;
+
+	pos = -1;
+
+	if(localitiesList != NULL && localitiesLen > 0)
+	{
+		for(int i = 0; i < localitiesLen; i++)
+		{
+			if(enteredId == localitiesList[i].localityId && localitiesList[i].isEmpty == FULL)
+			{
+				pos = i;
+				break;
+			}
+		}
+		if(pos == -1)
+		{
+			printf("\t\t\t\t\t\tLamentamos informale que ese id no existe reintente");
+			LOC_idAsk(localitiesList,localitiesLen);
+		}
+	}
+	return pos;
 }
 
 sLocality LOC_getOneFromId(sLocality* localitiesList, int localitiesLen, int id)
