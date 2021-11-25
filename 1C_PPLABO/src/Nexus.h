@@ -37,3 +37,5 @@ sOrders bringOrders(sOrders* ordersList, int ordersLen, int id);
 sPlastics bringPlasticTypes (sPlastics* plasticList, int plasticLen, int id);
 int ppAcumulator (sPlastics* plasticList,int lenPlastic, int id); // 10
 int countClientsByOrder (sOrders* ordersList, sPlastics* plasticsList,int ordersLen, int id);
+int mostOrdersFinder (sOrders* ordersList, int ordersLen, int id, int status);
+
