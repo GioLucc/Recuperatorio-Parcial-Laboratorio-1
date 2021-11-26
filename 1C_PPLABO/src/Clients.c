@@ -12,8 +12,13 @@
 #include <string.h>
 #include <ctype.h>
 
-
-int initClients (eClients* clientList, int len) ///
+/// @fn int initClients(eClients*, int)
+/// @brief Inicia el array de clientes en empty.
+///
+/// @param clientList
+/// @param len
+/// @return -1 si no se logro, 0 si se pudo.
+int initClients (eClients* clientList, int len)
 {
 	int state = -1;
 
@@ -27,7 +32,13 @@ int initClients (eClients* clientList, int len) ///
 	return state;
 }
 
-int freeClientSpot (eClients* clientList, int len) ///
+/// @fn int freeClientSpot(eClients*, int)
+/// @brief Busca lugar libre para un nuevo cliente.
+///
+/// @param clientList
+/// @param len
+/// @return devuelve -1 si no se pudo conseguir, o la posicion libre.
+int freeClientSpot (eClients* clientList, int len)
 {
 	int position;
 
@@ -39,7 +50,7 @@ int freeClientSpot (eClients* clientList, int len) ///
 		{
 			if(clientList[i].isEmpty == EMPTY)
 			{
-				position = i; ///
+				position = i;
 				break;
 			}
 		}
@@ -48,7 +59,16 @@ int freeClientSpot (eClients* clientList, int len) ///
 	return position;
 }
 
-int newClient (eClients* clientList, sLocality* localitiesList, int len, int* uniqueID, int* uniqueLocalityID) //
+/// @fn int newClient(eClients*, sLocality*, int, int*, int*)
+/// @brief Pide y valida los datos para la creación de un nuevo cliente.
+///
+/// @param clientList
+/// @param localitiesList
+/// @param len
+/// @param uniqueID
+/// @param uniqueLocalityID
+/// @return -1 si no se logro, 0 si se pudo.
+int newClient (eClients* clientList, sLocality* localitiesList, int len, int* uniqueID, int* uniqueLocalityID)
 {
 	int state;
 	eClients newClient;
@@ -94,7 +114,18 @@ int newClient (eClients* clientList, sLocality* localitiesList, int len, int* un
 	return state;
 }
 
-int addClient (eClients* clientList, int len, char companyName [], char cuit[], char adress [], int localityId, int id) ///
+/// @fn int addClient(eClients*, int, char[], char[], char[], int, int)
+/// @brief Alta de cliente, obtiene una posision libre y carga todos los datos de los parametros en esa posicion.
+///
+/// @param clientList
+/// @param len
+/// @param companyName
+/// @param cuit
+/// @param adress
+/// @param localityId
+/// @param id
+/// @return devuelve 1 si se pudo crear.
+int addClient (eClients* clientList, int len, char companyName [], char cuit[], char adress [], int localityId, int id)
 {
 	int pos;
 
@@ -113,6 +144,13 @@ int addClient (eClients* clientList, int len, char companyName [], char cuit[], 
 	return 1;
 }
 
+/// @fn int idAsk(eClients*, sLocality*, int)
+/// @brief Pide un id mostrando la lista de clientes existentes.
+///
+/// @param clientList
+/// @param localitiesList
+/// @param len
+/// @return La posicion para usar.
 int idAsk(eClients* clientList, sLocality* localitiesList, int len)
 {
 	int enteredIdToRemove;
@@ -131,6 +169,14 @@ int idAsk(eClients* clientList, sLocality* localitiesList, int len)
 	return positionToUse;
 }
 
+/// @fn int idValidation(eClients*, sLocality*, int, int)
+/// @brief Se fija si la posicion recibida por parametros existe.
+///
+/// @param clientList
+/// @param localitiesList
+/// @param len
+/// @param enteredId
+/// @return -1 si no existe, la posicion si existe.
 int idValidation (eClients* clientList, sLocality* localitiesList, int len, int enteredId)
 {
 	int pos;
@@ -156,7 +202,15 @@ int idValidation (eClients* clientList, sLocality* localitiesList, int len, int 
 	return pos;
 }
 
-int modifyClient (eClients* clientList, sLocality* localitiesList, int len, int* uniqueLocalityID) //
+/// @fn int modifyClient(eClients*, sLocality*, int, int*)
+/// @brief Pide ingresar el id de el cliente que quiere modificar y permite cambia dirección y localidad.
+///
+/// @param clientList
+/// @param localitiesList
+/// @param len
+/// @param uniqueLocalityID
+/// @return devuelve 1 si pudo hacerlo satisfactoriamente.
+int modifyClient (eClients* clientList, sLocality* localitiesList, int len, int* uniqueLocalityID)
 {
 	int positionToUse;
 	int option;
@@ -199,7 +253,14 @@ int modifyClient (eClients* clientList, sLocality* localitiesList, int len, int*
 	return 1;
 }
 
-int withdrawalClient (eClients* clientList, sLocality* localitiesList, int len) //
+/// @fn int withdrawalClient(eClients*, sLocality*, int)
+/// @brief Da de baja logica un cliente.
+///
+/// @param clientList
+/// @param localitiesList
+/// @param len
+/// @return devuelve -1 si no se pudo dar de baja, 0 si se pudo dar de baja.
+int withdrawalClient (eClients* clientList, sLocality* localitiesList, int len)
 {
 	int state;
 	int positionToUse;
@@ -213,12 +274,18 @@ int withdrawalClient (eClients* clientList, sLocality* localitiesList, int len) 
 			if(clientList[positionToUse].isEmpty == FULL)
 			{
 				clientList[positionToUse].isEmpty = EMPTY; /// Baja logica
+				 state = 0;
 			}
 	}
 
 	return state;
 }
 
+/// @fn int showOneClient(eClients)
+/// @brief muestra un cliente.
+///
+/// @param clientList
+/// @return -1 si no se logro, 0 si se pudo.
 int showOneClient (eClients clientList)
 {
 	int state;
@@ -237,6 +304,12 @@ int showOneClient (eClients clientList)
 	return state;
 }
 
+/// @fn int showListOfClients(eClients*, int)
+/// @brief muestra la lista de clientes existentes si es que existen.
+///
+/// @param clientList
+/// @param len
+/// @return -1 si no se logro, 0 si se pudo.
 int showListOfClients (eClients* clientList, int len)
 {
 	int state;
@@ -253,37 +326,13 @@ int showListOfClients (eClients* clientList, int len)
 			if(clientList[i].isEmpty == FULL)
 			{
 				showOneClient(clientList[i]);
+				state = 0;
 			}
 		}
 	}
 
 	return state;
 }
-
-/*
-int arrayCharge (eClients* clientList, int len, int* uniqueID)
-{
-	if(clientList != NULL && len > 0)
-	{
-		for(int i = 0; i < 20; i ++)
-		{
-			int pos;
-			*uniqueID = *uniqueID+2;
-
-			pos = freeClientSpot(clientList, len);
-
-			strcpy(clientList[pos].companyName, "Alberto");
-			strcpy(clientList[pos].cuit, "44-4444444-44");
-			strcpy(clientList[pos].adress, "Presidente Vigias 44");
-			clientList[pos].localityId = *uniqueID;
-			clientList[pos].clientId = *uniqueID;
-			clientList[pos].isEmpty = FULL;
-		}
-	}
-
-	return 1;
-}
-*/
 
 eClients CLI_getOneFromId(eClients* clientList, int clientsLen, int id)
 {
